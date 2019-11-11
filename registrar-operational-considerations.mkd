@@ -31,22 +31,68 @@ normative:
 
 informative:
   RFC7030:
+  ieee802-1AR:
+    target: "http://standards.ieee.org/findstds/standard/802.1AR-2009.html"
+    title: "IEEE 802.1AR Secure Device Identifier"
+    author:
+      ins: "IEEE Standard"
+    date: 2009
 
 --- abstract
 
 This document describes a number of operational modes that a
-BRSKI Registration Authority (Registrar) may take on.
+BRSKI Registration Authority (Registrar) may take on.  
 
 Each mode is defined, and then each mode is given a relevance
 within an over applicability of what kind of organization the
-Registrar is deployed into.  This document does not change any
-protocol mechanisms.
+Registrar is deployed into.
+This document does not change any protocol mechanisms.
+
+This document includes operational advice about avoiding unwanted
+consequences.
 
 --- middle
 
 # Introduction
 
-XXX
+{{I-D.ietf-anima-bootstrapping-keyinfra}} introduces a mechanism for
+new devices (called pledges) to be onboarded into a network without
+intervention from an expert operator.
+
+A key aspect of this is that there has to be a thing for the pledge to join.
+{{I-D.ietf-anima-bootstrapping-keyinfra}} refers to this thing as the
+"Domain", identified technically by the "DomainID".  
+Transitive evidence of this membership is provided in the form of a Local
+DeviceID, a form of {{8021AR}} certificate.
+
+There are several classes of operator of a local domain: ISP and large
+managed multi-side Enterprises are the primary target for this document.
+Medium sized single site Enterprises and Industrial Plant users are a
+secondary target for this document.  Unmanaged small enterprises and home
+users are addressed in a separate section at the end as special case.
+
+## Reference Network and Diagrams
+
+In order to deal with the full complexity and generality of operations, the
+reference network described herein is a bit more complicated than many
+networks actually are.
+
+In this guide the target is a world-wide Tier-1 ISP.  It has three network
+operations centers (NOC), the two major ones in Frankfurt and Denver, with an
+secondary center located in Perth, Australia.  The exact location of these
+NOCs is not important: the locations have been chosen to have an hour
+overlap in their 8-6 daytime shift, typical of world-wide operations.   
+This overlap is also not important, it just adds a degree of realism to this
+discussion.  The use of actual names makes subsequent discussion about
+failures easier.
+
+{:tier1isp: artwork-align="center"}
+~~~~ WHOLEFLOW
+{::include tier1isp.txt}
+~~~~
+{:tier1isp #tier1isp title="Reference ISP network"}
+
+
 
 # Privacy Considerations
 
