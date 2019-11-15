@@ -8,8 +8,7 @@ ${DRAFT}-${VERSION}.txt: ${DRAFT}.txt
 	: git add ${DRAFT}-${VERSION}.txt ${DRAFT}.txt
 
 %.xml: %.mkd ${TXTDIAGRAMS}
-	kramdown-rfc2629 ${DRAFT}.mkd | ./insert-figures >${DRAFT}.xml
-	: git add ${DRAFT}.xml
+	kramdown-rfc2629 -3 ${DRAFT}.mkd >${DRAFT}.xml || rm -f ${DRAFT}.xml
 
 %.txt: %.xml
 	unset DISPLAY; XML_LIBRARY=$(XML_LIBRARY):./src xml2rfc $? $@

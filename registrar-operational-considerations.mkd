@@ -70,17 +70,32 @@ consequences.
 new devices (called pledges) to be onboarded into a network without
 intervention from an expert operator.
 
-A key aspect of this is that there has to be a thing for the pledge to join.
+A key aspect of this is that there has to be a thing for the pledge to join!
 {{I-D.ietf-anima-bootstrapping-keyinfra}} refers to this thing as the
-"Domain", identified technically by the "DomainID".  
-Transitive evidence of this membership is provided in the form of a Local
-DeviceID, a form of {{ieee802-1AR}} certificate.
+"Domain", identified technically by the "DomainID".  The domain is embodied
+by the Registrar component. Membership in the domain is proven by
+possession of a valid Local DeviceID, a form of {{ieee802-1AR}} certificate.
 
-There are several classes of operator of a local domain: ISP and large
+The Registrar is the component that implements the domain, authorizing new devices (pledges) to join.  Proper and efficient operation of the Registrar is key aspect for the Autonomic mechanisms, and for enabling secure onboarding.
+
+This document provides implementation, deployment and operational guidance for the BRSKI Registrar.
+
+There are however several classes of operator of a local domain: ISP and large
 managed multi-side Enterprises are the primary target for this document.
 Medium sized single site Enterprises and Industrial Plant users are a
 secondary target for this document.  Unmanaged small enterprises and home
 users are addressed in a separate section at the end as special case.
+
+This document first introduces the different scales of deployment as a reference for further discussion and contrasts, and then provides analyses some consequences of architectural choices that may be appropriate for different scales of deployments.
+
+The document includes security best practices.
+
+## Terminology
+
+::boilerplate bcp14
+
+This document, while a Best Current Practices, makes use of BCP14 language to indicate which
+practices are mandatory, and which ones are just recommendations.
 
 ## Reference Network and Diagrams
 
