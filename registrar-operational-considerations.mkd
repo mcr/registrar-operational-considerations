@@ -137,12 +137,12 @@ The pledge interface is the southbound interface.  This interface runs the
 BRSKI-EST protocol.  This interface faces into the operator's network,
 receiving requests from devices to join the network. 
 
-For {{I-D.anima-bootstrapping-keyinfra}} use, the pledge interface is an
+For {{I-D.ietf-anima-bootstrapping-keyinfra}} use, the pledge interface is an
 HTTPS interface.  It may run on arbitrary port numbers and due to the way
 that the voucher interface pins the associated certificate it does not need 
 to have a specific DNS name, as it will not be verified by the pledge.
 
-For {{I-D.anima-constrained-voucher}} use, the pledge interface is a CoAP or
+For {{I-D.ietf-anima-constrained-voucher}} use, the pledge interface is a CoAP or
 CoAPS interface over UDP.  For use with CoAP/EDHOC, then a plain CoAP interface is
 used, and the security (EDHOC and OSCORE) lives above CoAP.
 For CoAP/DTLS (CoAPS) then there is DTLS layer below the CoAP layer.
@@ -157,7 +157,7 @@ discusses option for creating this certificate.
 
 The Pledge Inteface does not require a public IP address, nor does it have have to run on port 443. 
 
-In an ACP application ({{I-D.autonomic-control-plane}}), the Pledge Interface SHOULD 
+In an ACP application ({{I-D.ietf-anima-autonomic-control-plane}}), the Pledge Interface SHOULD 
 have an IPv6 ULA address from the prefix allocated to the ACP.  {{acpnoc}}
 provides some options for how the Pledge Interface can be best connected to
 the ACP.
