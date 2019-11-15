@@ -31,6 +31,13 @@ normative:
 
 informative:
   RFC7030:
+  WebPKI:
+    target: "https://cabforum.org/wp-content/uploads/BRv1.2.2.pdf"
+    author:
+      ins: "CA/Browser Forum"
+    title: "CA/Browser Forum Baseline Requirements for the Issuance and Management of Publicly-Trusted Certificates, v.1.2.2"
+    date: "October 2014"
+
   ieee802-1AR:
     target: "http://standards.ieee.org/findstds/standard/802.1AR-2009.html"
     title: "IEEE 802.1AR Secure Device Identifier"
@@ -77,7 +84,9 @@ In order to deal with the full complexity and generality of operations, the
 reference network described herein is a bit more complicated than many
 networks actually are.
 
-In this guide the target is a world-wide Tier-1 ISP.  It has three network
+### Tier-1 Network
+
+In this guide one target is a world-wide Tier-1 ISP.  It has three network
 operations centers (NOC), the two major ones in Frankfurt and Denver, with an
 secondary center located in Perth, Australia.  The exact location of these
 NOCs is not important: the locations have been chosen to have an hour
@@ -90,7 +99,121 @@ failures easier.
 ~~~~ WHOLEFLOW
 {::include tier1isp.txt}
 ~~~~
-{:tier1isp #tier1isp title="Reference ISP network"}
+{:tier1isp #tier1isp title="Reference Tier-1 ISP network"}
+
+### Enterprise Network
+
+A second target is a medium Enterprise that has a single (probably on-premise) data
+center.  The Enterprise has Information Technology (IT) operations that
+include the routers and systems supporting it's office staff in it's
+buildings.  It has Building Operations which integrates the IoT devices found
+in the buildings that it owns, and it has Operations Technology (OT) that
+manages the automated systems in it's on-site manufacturing facilities.
+
+INSERT DIAGRAM
+
+### Home Network
+
+A third target is a resident with a single CPE device.  The home owner has a
+few medium sized devices (a home NAS) as well as a few IoT devices (light
+bulbs, clothes washing machine).
+
+## Internal architectural view
+
+A Registrar will have four major interfaces, connected together by a common database.
+
+{:jrcarch: artwork-align="center"}
+~~~~ ARCHVIEW
+{::include basic-architecture.txt}
+~~~~
+{:tier1isp #tier1isp title="Reference Internal Architecture for Registrar"}
+
+### Pledge Interface (Southbound Interface)
+
+The pledge interface is the southbound interface.  This interface runs the
+BRSKI-EST protocol.  This interface faces into the operator's network,
+receiving requests from devices to join the network. 
+
+For {{I-D.anima-bootstrapping-keyinfra}} use, the pledge interface is an
+HTTPS interface.  It may run on arbitrary port numbers and due to the way
+that the voucher interface pins the associated certificate it does not need 
+to have a specific DNS name, as it will not be verified by the pledge.
+
+For {{I-D.anima-constrained-voucher}} use, the pledge interface is a CoAP or
+CoAPS interface over UDP.  For use with CoAP/EDHOC, then a plain CoAP interface is
+used, and the security (EDHOC and OSCORE) lives above CoAP.
+For CoAP/DTLS (CoAPS) then there is DTLS layer below the CoAP layer.
+
+{{I-D.richardson-anima-6tisch-stateless-ipip-proxy}} offers some additional
+mechanisms, one of which involves dynamically created IPIP tunnels.  If these
+mechanisms are in use, then the southbound interface would need to support
+these options as well.
+
+The Pledge Interface requires a TLS ServerCertificate, and {{brskiestcert}}
+discusses option for creating this certificate.
+
+The Pledge Inteface does not require a public IP address, nor does it have have to run on port 443. 
+
+In an ACP application ({{I-D.autonomic-control-plane}}), the Pledge Interface SHOULD 
+have an IPv6 ULA address from the prefix allocated to the ACP.  {{acpnoc}}
+provides some options for how the Pledge Interface can be best connected to
+the ACP.
+
+Outside of the ACP context, running the Pledge interface on an IP address that has a 
+FQDN that resolves to that IP address (if only internally), and operating it on port 443 may have operational advantages.
+
+### MASA client (Northbound Interface)
+
+The MASA client interface connects outward to the Internet to speak to the
+Manufacturer Authorized Signing Authority (MASA).  This is a TLS Client
+interface.
+
+Use of a TLSClientCertificate is RECOMMENDED as this may be the best way for
+a manufacturer to identify clients. {{brskimasacert}} discusses options for
+signing this certificate.
+
+The MASA client interface is outgoing only and does not require any special
+connectivity.  It may be placed behind a typical enterprise or residential
+NAT44 gateway. IPv6 connectivity is RECOMMENDED.  It does need access to DNS,
+and the DNS lookups SHOULD be validated with DNSSEC.
+
+The MASA client interface will need to validate the server certificates of
+the MASA, and to do this it will need access to the common public WebPKI ({{WebPKI}})
+trust anchors to validate the MASA.  The MASA client MAY also require access to a 
+database of pinned certificates to validate specific manufacturers as called out for in 
+{{I-D.ietf-anima-bootstrapping-keyinfra}} section 2.8 and section 5.4.
+
+### Join Proxy (Southbound Interface)
+
+In the ACP context, the Registrar is expected to have a Join Proxy operating on the Southbound Interface in order to announce the existence of the Registrar to the local network, for the benefit of directly connected devices.  This permits the machines in the NOC itself to autonomically join the domain.
+
+The Join Proxy MAY announce the IP address (ULA) and port of the actual Pledge Interface, rather than announcing a link-local address and then performing a proxy operation.
+
+### EST and BRSKI GRASP announcements
+
+As specified in {{I-D.ietf-anima-bootstrapping-keyinfra}} section 4.3, in an ACP context, the Registrar
+MUST announce itself inside the ACP using GRASP.  The Registrar MUST incorporate enough of a GRASP daemon in order to perform the M_FLOOD announcements.
+
+As specified in {{I-D.ietf-anima-autonomic-control-plane}} section 6.1.2, in an ACP context, 
+if the Registrar will also be providing for renewal of certificates using EST, then it SHOULD
+announce itself inside the ACP using GRASP.  Unless made impossible due to loading concerns,
+it is RECOMMENDED that all Registrar instances offer certificate renewal services in this fashion.
+
+The use of {{I-D.ietf-acme-star}} Short-Term Automatically-Renewed Certificates is RECOMMENDED.
+This mandates that the EST server be highly available.
+If STAR-style renewals are not used, then the Certificate Authority will need to make OCSP or CRL Distribution points available.
+
+### Certificate Authority
+
+If the Enterprise/ISP has an existing certificate authority system that it wishes to use, then an interface to it has to be enabled.  This may run protocols like EST, CMP or ACME.
+
+Smaller Enterprises and Residential uses of BRSKI are encouraged to use an internal (private) certificate authority. See {{certauthsecurity}} for a discussion of securing this CA.
+
+### Management Interface
+
+The Registrar will require a management interface.  As is the trend, this will often be a web-based single page application using AJAX API calls to perform communications.  This interface SHOULD be made available on the Southbound NOC interface only, and it MUST be on a different IP address and port number then the BRSKI-EST interface.  It should be secured with HTTPS, and use of a public ({{WebPKI}}) anchor is reasonable as it may be that the internal certificate authority may be unavailable or require maintenance.
+
+An entirely separate process is justified with the only connection to the other procesess being the database. (This does not mean it can not share code modules)
 
 
 
