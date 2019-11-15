@@ -28,9 +28,13 @@ author:
 normative:
   BCP14: RFC8174
   I-D.ietf-anima-bootstrapping-keyinfra:
+  I-D.ietf-anima-autonomic-control-plane:
+  I-D.richardson-anima-6tisch-stateless-ipip-proxy:
+  I-D.ietf-acme-star:
 
 informative:
   RFC7030:
+  I-D.richardson-anima-6tisch-stateless-ipip-proxy:
   WebPKI:
     target: "https://cabforum.org/wp-content/uploads/BRv1.2.2.pdf"
     author:
@@ -70,7 +74,7 @@ A key aspect of this is that there has to be a thing for the pledge to join.
 {{I-D.ietf-anima-bootstrapping-keyinfra}} refers to this thing as the
 "Domain", identified technically by the "DomainID".  
 Transitive evidence of this membership is provided in the form of a Local
-DeviceID, a form of {{8021AR}} certificate.
+DeviceID, a form of {{ieee802-1AR}} certificate.
 
 There are several classes of operator of a local domain: ISP and large
 managed multi-side Enterprises are the primary target for this document.
@@ -99,7 +103,7 @@ failures easier.
 ~~~~ WHOLEFLOW
 {::include tier1isp.txt}
 ~~~~
-{:tier1isp #tier1isp title="Reference Tier-1 ISP network"}
+{:tier1isp title="Reference Tier-1 ISP network"}
 
 ### Enterprise Network
 
