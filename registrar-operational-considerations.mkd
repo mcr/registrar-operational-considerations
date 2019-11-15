@@ -29,12 +29,11 @@ normative:
   BCP14: RFC8174
   I-D.ietf-anima-bootstrapping-keyinfra:
   I-D.ietf-anima-autonomic-control-plane:
-  I-D.richardson-anima-6tisch-stateless-ipip-proxy:
   I-D.ietf-acme-star:
 
 informative:
   RFC7030:
-  I-D.richardson-anima-6tisch-stateless-ipip-proxy:
+  I-D.richardson-anima-state-for-joinrouter:
   WebPKI:
     target: "https://cabforum.org/wp-content/uploads/BRv1.2.2.pdf"
     author:
@@ -148,7 +147,7 @@ CoAPS interface over UDP.  For use with CoAP/EDHOC, then a plain CoAP interface 
 used, and the security (EDHOC and OSCORE) lives above CoAP.
 For CoAP/DTLS (CoAPS) then there is DTLS layer below the CoAP layer.
 
-{{I-D.richardson-anima-6tisch-stateless-ipip-proxy}} offers some additional
+{{I-D.richardson-anima-state-for-joinrouter}} offers some additional
 mechanisms, one of which involves dynamically created IPIP tunnels.  If these
 mechanisms are in use, then the southbound interface would need to support
 these options as well.
