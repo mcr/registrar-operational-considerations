@@ -220,6 +220,25 @@ The Registrar will require a management interface.  As is the trend, this will o
 An entirely separate process is justified with the only connection to the other procesess being the database. (This does not mean it can not share code modules)
 
 
+# Connecting the Autonomic Control Plane to the Network Operations Center {#acpnoc}
+
+TBD
+
+# Public Key Infrastructure Recommendations for the Registrar {#certauthsecurity}
+
+BLAH BLAH
+
+# Certificates needed for the Registrar
+
+BLAH
+
+## TLS Server Certificate for BRSKI-EST {#brskiestcert}
+
+TBD
+
+## TLS Client Certificate for BRSKI-MASA {#brskimasacert}
+
+TBD
 
 # Privacy Considerations
 

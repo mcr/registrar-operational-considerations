@@ -1,12 +1,13 @@
 DRAFT:=registrar-operational-considerations
 VERSION:=$(shell ./getver ${DRAFT}.mkd )
 EXAMPLES=
+TXTDIAGRAMS=basic-architecture.txt tier1isp.txt
 
 ${DRAFT}-${VERSION}.txt: ${DRAFT}.txt
 	cp ${DRAFT}.txt ${DRAFT}-${VERSION}.txt
 	: git add ${DRAFT}-${VERSION}.txt ${DRAFT}.txt
 
-%.xml: %.mkd 
+%.xml: %.mkd ${TXTDIAGRAMS}
 	kramdown-rfc2629 ${DRAFT}.mkd | ./insert-figures >${DRAFT}.xml
 	: git add ${DRAFT}.xml
 
