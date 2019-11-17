@@ -88,7 +88,7 @@ users are addressed in a separate section at the end as special case.
 
 This document first introduces the different scales of deployment as a reference for further discussion and contrasts, and then provides analyses some consequences of architectural choices that may be appropriate for different scales of deployments.
 
-The document includes security best practices.
+The document includes security best practices for the management of the certificates and the certificate authorities.
 
 ## Terminology
 
@@ -237,7 +237,7 @@ An entirely separate process is justified with the only connection to the other 
 
 # Connecting the Autonomic Control Plane to the Network Operations Center {#acpnoc}
 
-TBD
+{{I-D.ietf-anima-autonomic-control-plane}} section 8.1 describes a mechanism to connect non-ACP capable systems to the ACP.
 
 # Public Key Infrastructure Recommendations for the Registrar {#certauthsecurity}
 
