@@ -37,6 +37,8 @@ informative:
   I-D.richardson-anima-state-for-joinrouter:
   RFC8555:
   I-D.friel-acme-integrations:
+  I-D.moskowitz-ecdsa-pki:
+  I-D.hallambaker-mesh-udf:
   WebPKI:
     target: "https://cabforum.org/wp-content/uploads/BRv1.2.2.pdf"
     author:
