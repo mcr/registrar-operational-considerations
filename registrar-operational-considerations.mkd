@@ -264,9 +264,13 @@ The requirements for the PKI depends upon what kind of network is being managed.
 
 A three-tier PKI infrastructure is appropriate for an ISP.  This entails having a root CA created with the key kept offline, and a number of intermediate CAs that have online keys that issue "day-to-day" certificates.
 
-Whether the root private key is secured by being on a USB key kept in a safe, or via Hardware Security Module is a local decision informed by best current practices.
+Whether the root private key is secured by applying secret-splitting, and then storing the results on multiple USBs key kept in multiple safes, or via Hardware Security Module is a local decision informed by best current practices.
 
 The root CA is then used to sign a number of intermediate entities: this will include an intermediate CA for the Registrar that is deployed into each redundant NOC location.  Multiple intermediate CAs with a common root provides significantly more security and operational flexibility than attempts to share a private key among locations.
+
+While the root CA should have a longevity of at least 5 years, after which it can be resigned rather than re-generated, the intermediate CA keys need only have a 1-2 year duration, and at the end of their lifetime, a new private key should be generated.
+Shorter periods are possible, but until there is more experience with them, not recommended.  The intermediate CA key should be regenerated because the intermediate CA private key will need to be online, available to the Registrar CA system.
+There are many more opportunities for the key to leak, such as into backups.
 
 The intermediate CA is then used to sign End-Entity certificates which are returned as part of the BRSKI-EST mechanism.
 
@@ -283,11 +287,29 @@ CA will be required for some legacy equipment.
 
 ### Enterprise Network
 
-A three-tier PKI infrastructure is appropriate for an ISP.  This entails having a root CA created with the key kept offline.  Whether this is done with a USB key kept in a safe, or via Hardware Security Module is a local decision.
+Enterprises that have multiple Network Operations Center should consider the recommendations above for an ISP.
 
-The root CA is then used to sign a number of intermediate entities: this will include an intermediate CA for the Registrar that is deployed into each redundant NOC location.  Multiple intermediate CAs with a common root provides significantly more security and operational flexibility than attempts to share a private key among locations.
+This section applies to Enterprises that have all NOC operations/personel into a single location.  This is not a hard rule for scaling, but the intent is that physical security
+for the ACP Connect network is rather easy, that only a single legal jurisdiction will apply, and that it is possible to get people together easily to do things like resign keys.
 
-The intermediate CA is then used to sign End-Entity certificates which are returned as part of the BRSKI-EST mechanism.
+A three-tier PKI infrastructure is still recommended for the reason that
+it provides operational continuity options not available with a two-level system.
+The recommendation is to have a root CA mechanism installed on a Virtual Machine
+which is not connected to a network.  The root CA private key is kept offline,
+secret split among a number of USB keys, kept in the possession of key personnel.
+
+The secret split should have at least five components, of which at least three are required to reconstruct the key.  See {{I-D.hallambaker-mesh-udf}} section 4.5 for one such mechanism, there are many others, and there are no interoperability requirements for the secret split.
+
+The essential point is that the Enterprise is able to recover the root CA key
+even without some number of personnel and is able to continue operating it's network.
+
+As in the ISP case, the intermediate CA is then used to sign End-Entity certificates which  are returned as part of the BRSKI-EST mechanism.  One intermediate CA key suffices as there
+is only one NOC location with a Registrar.  Incidental keys for internal operations,
+and for the BRSKI-EST server certificate can be done with this single intermediate CA.
+
+The BRSKI-MASA TLS Client Certificate key for an enterprise may not be needed;
+it depends upon the policies of the manufacturers which are involved.  It may be
+simpler to use a certificate produced by a public CA (such as LetsEncrypt), as this makes it easier for manufacturers to validate the provided certificate.
 
 The Registrar needs client and server certificates for it's BRSKI-EST and BRSKI-MASA connections.  It is recommended that an additional intermediate CA be created for
 manually issued certificates such as these.  This intermediate CA could be called
