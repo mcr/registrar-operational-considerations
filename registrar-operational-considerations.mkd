@@ -39,6 +39,12 @@ informative:
   I-D.friel-acme-integrations:
   I-D.moskowitz-ecdsa-pki:
   I-D.hallambaker-mesh-udf:
+  threetier:
+    target: "https://en.wikipedia.org/wiki/Multitier_architecture"
+    title: "Multitier architecture"
+    author: "Wikipedia"
+    date: "December 2019"
+
   WebPKI:
     target: "https://cabforum.org/wp-content/uploads/BRv1.2.2.pdf"
     author:
@@ -347,6 +353,86 @@ CPE.  The detachable storage is owned by the home owner, and can be removed
 from the CPE device if it is replaced.   More experience will be necessary in
 order to determine if this is a workable solution.
 
+# Architecture Considerations for the Registrar
+
+There are a number of ways to scale the Registrar.  Web framework three-tier
+mechanisms are the most obvious.  See {{threetier}} for an overview.  This
+architecture is very familiar and can work well for a Registrar.
+There are a few small issues that need to be addressed relating to the TLS
+connections.
+
+The BRSKI-EST connection uses TLS Client Certificate information, so it is
+necessary for the presentation tier to pass the entire certificate through to
+the application layer.  The presentation tier MUST accept all Client
+Certificates, many of which might it might not have anchors for.
+
+In addition, the Registrar Voucher-Request MUST be signed using the same key
+pair that is used to terminate the TLS connection, so the application layer
+will need access to the same keypair that the presentation tier uses.  This
+can be operationally challenging if the presentation tier is provided by a
+hardware-based TLS load balancer.
+
+For this reason, an alternate architecture where the front-end load balancer
+provides TCP level load balancing, leaving the TLS operations to software TLS
+implementations in the application layer may be simpler to build.
+Given that the Registrar is an inward facing system, and is not subject to the
+Internet-scale loads typical of "Black Friday" web system, the same kind of
+extreme scaling is not necessary.
+
+The BRSKI-EST flow includes a back-end call to the BRSKI-MASA flow.
+That is, during the BRSKI-EST /voucherrequest call, a voucher will need to be
+fetched from the MASA using a BRSKI-MASA connection.  There are three ways to
+do this.
+
+## Completely Synchronous Registrar
+
+In this simplest version the Registrar operates as a single thread,
+processing the voucher-request from the Pledge, and then starting a
+BRSKI-MASA client session, while the connection from the Pledge waits.
+
+This flow is very simple to implement, but requires an entire processing
+thread to block while the BRSKI-MASA protocol executes.  The Pledge may
+timeout on this request, disconnect and retry.  Experience so far is that
+typical default timeouts work fine.
+
+It is recommended that the voucher-request be recorded in a database, and if
+a corresponding fresh voucher is also found in the database, that it be
+returned rather than fetching a new voucher from the MASA.  This accomodates
+the situation where the Pledge did timeout, but the BRSKI-MASA protocol did
+complete.  This results in the Pledge receiving the voucher upon retrying
+without having to go through the process of getting a new voucher.
+This only works if the Pledge retries with the same Nonce each time.
+
+## Partially Synchronous Registrar
+
+A slightly more complicated version is for the Registrar to look in a
+database for a matching voucher-request, and if none is found, to
+return a 202 code upon the voucher-request, asking the Pledge to
+retry.
+
+In the meantime the BRSKI-MASA connection can be performed, and the resulting
+voucher stored in a database.  The connection can be done in the same thread
+that just deferred the connection, or in another thread kicked off for this
+purpose.
+
+## Asynchronous Registrar
+
+In the completely asynchronous architecture, things work as with the
+Partially Synchronous version.  The voucher request is placed into a database
+as before.
+
+A completely separate system, probably with different network connectivity,
+but connected to the same database,  performs the BRSKI-MASA processing, then
+fills the database with the answer.
+
+This version may have a noticeably higher latency as it requires a database
+operation and a database trigger to invoke the process.  This architecture
+has the advantage that the internal facing Registrar never connects to the
+Internet.  Furthermore, the number of internal facing Registrar instances can
+be tuned independently from the number of outward facing clients.  This may
+be an advantage for networks that need to deal with a high number of
+malicious or lost internal clients.
+
 # Certificates needed for the Registrar
 
 In addition to hosting a PKI root, the Registrar needs several other key
@@ -356,30 +442,70 @@ pairs.  They are:
 
 A certificate to be used to answer TLS connections from new devices
 (pledges).  This must be of a type that expected pledges can understand.
-This recommends that it be an ECDSA key with a movement to EdDSA in the
-future.
+Returning an RSA key to a client that can validate only ECDSA chains is a
+problem.  The constrained IoT ecosystem prefers ECDSA, and often does not
+have code that can verify RSA.  Meanwhile, older FIPS-140 validated libraries
+present in many router operating systems support only RSA!
 
-A challenge is that the server must decide which key to return before it
-receives very much from the client.  While TLS 1.3 has mandatory Server Name
-Indicator (SNI),
+The recommendation is to use ECDSA keys, with a sensitiviity to when a
+majority of systems might support EdDSA.    There are well established
+mechanisms in most TLS server libraries to permit multiple certificates to be
+loaded and to return an appropriate key based upon the client capabilities.
+This should be used.
+
+The certificate used for the BRSKI-EST end point is not validated by the
+BRSKI pledge using public trust anchors, but rather it is pinned by the
+{{RFC8366}} voucher.  As such it can come from the private CA, as recommended
+above: either signed by a specific intermediate CA or via a root CA as
+appropriate for the environment.
 
 ## TLS Client Certificate for BRSKI-MASA {#brskimasacert}
 
-TBD
+A certificate may optionally be used for authentication of the Registrar to
+the MASA.  It is recommended to always include one.
+
+It can be the same certificate used by TLS Server Certificate above, and this
+is most appropriate in small Registrars which are not distributed, such as
+ones aimed as Residential/Home networks.
+
+In larger, distributed Registrars, cryptographic hygiene dictates that the
+private key not be distributed, so a unique certificate per Registrar client
+is appropriate.  They should all be signed by the same intermediate CA, with
+the intermediate and root CA certificates being supplied in the TLS connection.
+
+## Certificate for signing of Voucher-Requests {#brskivoucherrequest}
+
+As part of the BRSKI voucher-request process the Pledge's Voucher-Request is
+wrapped by the Registrar in another voucher-request and signed.
+It is this certificate which which pinned by MASA to validate the connection.
+
+The certificate used to sign the voucher-request MUST be the same as the one
+that is used for the TLS Server Connection.  This implies that the signed
+voucher-request MUST be constructed on the same machine that terminates the
+BRSKI-EST MASA connection.
 
 # Privacy Considerations
 
-YYY
+Section 10.2 of {{BRSKI}} details a number of things that are revealed by the
+BRSKI-EST protocol.   A multi-location Registrar with different TLS Server
+Certificates will have a different privacy profile than a Registrar that uses
+only a single certificate.
+
+Section 10.3 of {{BRSKI}} details what is revealed by the BRSKI-MASA
+protocol.   The operational recommendations of this document do not affect or
+mitigate things at all.
 
 # Security Considerations
 
-ZZZ
+
 
 # IANA Considerations
 
+This document makes no IANA allocations.
+
 # Acknowledgements
 
-Hello.
+Your name here.
 
 # Changelog
 
