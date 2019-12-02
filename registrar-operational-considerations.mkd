@@ -44,7 +44,7 @@ informative:
     target: "https://en.wikipedia.org/wiki/Multitier_architecture"
     title: "Multitier architecture"
     author:
-      ins: "Wikipedia"
+      org: "Wikipedia"
     date: "December 2019"
 
   WebPKI:
