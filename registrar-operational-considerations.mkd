@@ -27,10 +27,11 @@ author:
 
 normative:
   BCP14: RFC8174
-  I-D.ietf-anima-bootstrapping-keyinfra:
+  I-D.ietf-anima-bootstrapping-keyinfra: BRSKI
   I-D.ietf-anima-autonomic-control-plane:
   I-D.ietf-acme-star:
   I-D.ietf-anima-constrained-voucher:
+  RFC8366:
 
 informative:
   RFC7030:
@@ -42,7 +43,8 @@ informative:
   threetier:
     target: "https://en.wikipedia.org/wiki/Multitier_architecture"
     title: "Multitier architecture"
-    author: "Wikipedia"
+    author:
+      ins: "Wikipedia"
     date: "December 2019"
 
   WebPKI:
@@ -353,7 +355,7 @@ CPE.  The detachable storage is owned by the home owner, and can be removed
 from the CPE device if it is replaced.   More experience will be necessary in
 order to determine if this is a workable solution.
 
-# Architecture Considerations for the Registrar
+# Architecture Considerations for the Registrar {#arch}
 
 There are a number of ways to scale the Registrar.  Web framework three-tier
 mechanisms are the most obvious.  See {{threetier}} for an overview.  This
@@ -486,17 +488,74 @@ BRSKI-EST MASA connection.
 
 # Privacy Considerations
 
-Section 10.2 of {{BRSKI}} details a number of things that are revealed by the
+Section 10.2 of {{-BRSKI}} details a number of things that are revealed by the
 BRSKI-EST protocol.   A multi-location Registrar with different TLS Server
 Certificates will have a different privacy profile than a Registrar that uses
 only a single certificate.
 
-Section 10.3 of {{BRSKI}} details what is revealed by the BRSKI-MASA
+Section 10.3 of {{-BRSKI}} details what is revealed by the BRSKI-MASA
 protocol.   The operational recommendations of this document do not affect or
 mitigate things at all.
 
 # Security Considerations
 
+Section 11 of {{-BRSKI}} does not deal with any attacks against the Registrar,
+as the Registrar is considered to be an internally facing system.  
+
+In the context of the Autonomic Control Plane ({{-BRSKI}} section 9, and
+{{I-D.ietf-anima-autonomic-control-plane}}) it is expected that the majority
+of equipment attached to a network are connected by wired ethernet.  The
+opportunity for a massive attack against the Registrar is considered low in
+an ISP, or multi-side Enterprise backbone network.
+
+## Denial of Service Attacks against the Registrar
+
+However, there are some exposures which need to be taken into account,
+particular in the Enterprise or Institutional Campus network: typically these
+networks have large number of access ports, one for each desktop system.
+Those systems can be infected with Malware, or may be located in student
+computer labs physically accessible with minimal authorization.  While an
+attack on the Registrar might be part of some kind of student protest, an
+attack by malware seems more likely.
+
+The different architectures proposed in {{arch}} of this document provides
+some recommendations on differing scales.  The use of a fully asynchronous
+design is recommended for Enterprise uses of BRSKI where there may be a large
+number of IoT devices that are expected to onboard.  The ability to scale the
+BRSKI-EST Pledge Interface without having the scale the rest of the system
+provides for resiliency of the Registrary.
+
+It bears repeating that the use of of a stateless technology in the Join
+Proxy moves the load due to attacking systems from the Join Proxy into the
+Registrar.  This increases the network bandwidth required from the Join Proxy
+to the Registrar with the benefit of simplifying the Join Proxy.
+
+This is an intentional design decision to centralize the impact into the
+purpose built Registrar system(s).
+
+## Loss of Keys/Corruption of Infrastructure
+
+In Home/Residential Network ("homenet") uses of {{-BRSKI}} the biggest risk
+is likely that of loss of the Registrar's key pairs.  Not to a malicious
+entity that steals them with intent to cause damage, but from outright loss.
+
+This can be due to failure to backup the database followed by a CPE device
+failure, but the case where a CPE device is simply thrown away to be replaced
+by an uninformed technician is probably the most likely situation.
+
+This situation results in loss of control for all devices in the home, and
+much frustration from the home owner who has to go through an onboarding
+process for all the devices.  The use of a standardized onboarding protocol
+significantly mitigates the hassle; the current "state of the art" proccess
+involves a series of appliance-specific smartphone applications, which may or
+not not actually work on more recent devices.
+
+This is why the focus on saving of the database along with a secret splitting
+process to secure it.   At present there is no cross-vendor format for this
+database, so the saved data is only useable with a Registrar from the same
+vendor.  So this protects against device failure, where it is replaced by an
+identical device or an upward compatible device from the same manufacturer,
+but not against changes of vendor.
 
 
 # IANA Considerations
