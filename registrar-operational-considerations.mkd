@@ -28,7 +28,7 @@ author:
 normative:
   BCP14: RFC8174
   I-D.ietf-anima-bootstrapping-keyinfra: BRSKI
-  I-D.ietf-anima-autonomic-control-plane:
+  I-D.ietf-anima-autonomic-control-plane: ACP
   I-D.ietf-acme-star:
   I-D.ietf-anima-constrained-voucher:
   RFC8366:
@@ -491,6 +491,36 @@ The certificate used to sign the voucher-request MUST be the same as the one
 that is used for the TLS Server Connection.  This implies that the signed
 voucher-request MUST be constructed on the same machine that terminates the
 BRSKI-EST MASA connection.
+
+# Autonomic Control Plane Addressing
+
+In the Enterprise and ISP use cases, the creation of an {{-ACP}} Autonomic Control Plane is assumed.
+(The use of an ACP for the Home Network of IoT devices is considered unnecessary due to HNCP)
+
+In these context the certificates which are returned by the Registrar MUST contain a unique IPv6 ULA address.
+{{-ACP} section 6.10 outlines several addressing schemes for the ULA addresses.
+The use of the ACP Vlong Addressing Sub-Scheme (6.10.5) is recommended as it provides the most flexibility for
+devices.
+
+The use of this mode limits the number of nodes in the network to between 32768 and 8 Million.
+32K routers in an ISP network seems like quite a lot already, but use of F=0
+addresses provides for up to 8 Million devices, each with 256 management end points.
+
+It should be noted that a mix of F=0 and F=1 addresses may be used, but the BRSKI protocol does not directly provide a way to negotiated this.
+This could be done as part of the Certificate Signing Request: the device
+could decide which kind of address to ask for by changing the address that it
+asks for, but this is non-standardized and may not work.
+
+A network manager that saw that a device was running out of F=0 space, that
+is if 256 addresses was not enough for a device, could allocate an F=1
+address in a management interface.
+At the next certificate renewal (which could be forced by a management
+action), then a new certificate would be issues with the larger address space.
+
+256 addresses for a single device may seem like a lot, but it is increasing
+the case that routers may have a large number of virtualized functions within
+and each may reasonably need to be separately connected to it's SDN controller.
+
 
 # Privacy Considerations
 
