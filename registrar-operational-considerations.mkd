@@ -1,7 +1,7 @@
 ---
 title: Operational Considerations for BRSKI Registrar
 abbrev: Registrar Considerations
-docname: draft-richardson-anima-registrar-considerations-00
+docname: draft-richardson-anima-registrar-considerations-01
 
 # stand_alone: true
 
@@ -295,7 +295,7 @@ and intermediate CAs, but there may be operational reasons why an RSA intermedia
 CA will be required for some legacy equipment.
 
 
-### Enterprise Network
+## Enterprise Network
 
 Enterprises that have multiple Network Operations Center should consider the recommendations above for an ISP.
 
@@ -328,7 +328,7 @@ and intermediate CAs.  In an Enterprise, there are likely many more legacy
 devices that might need to become involved in the secure domain.  It is
 recommended that an RSA root and intermediate CA be more strongly considered.
 
-### Home Network
+## Home Network
 
 Home networks and small offices that use residential class equipment are the
 most challenging situation.  The three-tier PKI architecture is not justified
@@ -500,7 +500,7 @@ mitigate things at all.
 # Security Considerations
 
 Section 11 of {{-BRSKI}} does not deal with any attacks against the Registrar,
-as the Registrar is considered to be an internally facing system.  
+as the Registrar is considered to be an internally facing system.
 
 In the context of the Autonomic Control Plane ({{-BRSKI}} section 9, and
 {{I-D.ietf-anima-autonomic-control-plane}}) it is expected that the majority
