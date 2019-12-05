@@ -472,8 +472,14 @@ ones aimed as Residential/Home networks.
 
 In larger, distributed Registrars, cryptographic hygiene dictates that the
 private key not be distributed, so a unique certificate per Registrar client
-is appropriate.  They should all be signed by the same intermediate CA, with
-the intermediate and root CA certificates being supplied in the TLS connection.
+is appropriate.
+They should all be signed by the same intermediate CA, with the intermediate and root CA certificates being supplied in the TLS connection.
+
+### Use of Publically Anchored TLS Client Certificate with BRSKI-MASA connection
+
+The use TLS Client Certificate which has a public anchor (such as from LetsEncrypt) has an advantage that is makes it easier for the MASA to reject malicious clients.
+
+If the Registrar is not using a supply chain integration that includes the MASA being aware of the cryptographic identity of the Registrar, then the use of a publically anchored certificate is RECOMMENDED.
 
 ## Certificate for signing of Voucher-Requests {#brskivoucherrequest}
 
