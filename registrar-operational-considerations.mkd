@@ -537,7 +537,7 @@ In the Enterprise and ISP use cases, the creation of an {{-ACP}} Autonomic Contr
 (The use of an ACP for the Home Network of IoT devices is considered unnecessary due to HNCP)
 
 In these context the certificates which are returned by the Registrar MUST contain a unique IPv6 ULA address.
-{{-ACP} section 6.10 outlines several addressing schemes for the ULA addresses.
+{{-ACP}} section 6.10 outlines several addressing schemes for the ULA addresses.
 The use of the ACP Vlong Addressing Sub-Scheme (6.10.5) is recommended as it provides the most flexibility for
 devices.
 
