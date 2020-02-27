@@ -10,7 +10,6 @@ area: Internet
 kw: Internet-Draft
 cat: bcp
 
-coding: us-ascii
 pi:    # can use array (if all yes) or hash here
   toc: yes
   sortrefs:   # defaults to yes
@@ -25,7 +24,7 @@ author:
   email: mcr+ietf@sandelman.ca
 
 normative:
-  BCP14: RFC8174
+  RFC8174:
   I-D.ietf-anima-bootstrapping-keyinfra: BRSKI
   I-D.ietf-anima-autonomic-control-plane:
   I-D.ietf-acme-star:
@@ -104,7 +103,7 @@ The document includes security best practices for the management of the certific
 
 ## Terminology
 
-::boilerplate bcp14
+{::boilerplate bcp14}
 
 This document, while a Best Current Practices, makes use of BCP14 language to indicate which
 practices are mandatory, and which ones are just recommendations.
