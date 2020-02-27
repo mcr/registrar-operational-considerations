@@ -15,6 +15,6 @@
 .------------.     .-----------.       .------------.
 | Join Proxy |     |  Pledge   |--.    | EST/BRSKI  |
 |------------|     | Interface |  |    |------------|
-| GRASP      |     | BRSKI-EST |e |    | full-GRASP |
+| GRASP      |     | BRSKI-EST |e |    |    GRASP   |
 | (DULL)     |     '-----------'T |    '------------'
 '------------'        '-----------'

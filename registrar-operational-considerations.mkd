@@ -7,11 +7,9 @@ docname: draft-richardson-anima-registrar-considerations-02
 
 ipr: trust200902
 area: Internet
-wg: anima Working Group
 kw: Internet-Draft
-cat: std
+cat: bcp
 
-coding: us-ascii
 pi:    # can use array (if all yes) or hash here
   toc: yes
   sortrefs:   # defaults to yes
@@ -26,7 +24,7 @@ author:
   email: mcr+ietf@sandelman.ca
 
 normative:
-  BCP14: RFC8174
+  RFC8174:
   I-D.ietf-anima-bootstrapping-keyinfra: BRSKI
   I-D.ietf-anima-autonomic-control-plane: ACP
   I-D.ietf-acme-star:
@@ -44,7 +42,7 @@ informative:
     target: "https://en.wikipedia.org/wiki/Multitier_architecture"
     title: "Multitier architecture"
     author:
-      ins: "Wikipedia"
+      org: "Wikipedia"
     date: "December 2019"
 
   WebPKI:
@@ -84,9 +82,10 @@ intervention from an expert operator.
 
 A key aspect of this is that there has to be a thing for the pledge to join!
 {{I-D.ietf-anima-bootstrapping-keyinfra}} refers to this thing as the
-"Domain", identified technically by the "DomainID".  The domain is embodied
-by the Registrar component. Membership in the domain is proven by
-possession of a valid Local DeviceID, a form of {{ieee802-1AR}} certificate.
+"Domain", identified technically by the "DomainID".  The Registrar component
+embodies the identity, membership and trust anchor of the domain.
+Membership in the domain is proven by possession of a valid Local DeviceID, a
+form of {{ieee802-1AR}} certificate.
 
 The Registrar is the component that implements the domain, authorizing new devices (pledges) to join.  Proper and efficient operation of the Registrar is key aspect for the Autonomic mechanisms, and for enabling secure onboarding.
 
@@ -104,7 +103,7 @@ The document includes security best practices for the management of the certific
 
 ## Terminology
 
-::boilerplate bcp14
+{::boilerplate bcp14}
 
 This document, while a Best Current Practices, makes use of BCP14 language to indicate which
 practices are mandatory, and which ones are just recommendations.
@@ -166,9 +165,12 @@ BRSKI-EST protocol.  This interface faces into the operator's network,
 receiving requests from devices to join the network.
 
 For {{I-D.ietf-anima-bootstrapping-keyinfra}} use, the pledge interface is an
-HTTPS interface.  It may run on arbitrary port numbers and due to the way
-that the voucher interface pins the associated certificate it does not need
-to have a specific DNS name, as it will not be verified by the pledge.
+HTTPS interface.
+Due to the use of provinsional trust state in the BRSKI-EST interface the
+pledge never verifies the contents of the TLS server certificate.
+As a result, the registrar may run on arbitrary port numbers.
+The voucher pins the associated certificate, so the Registrar does not need to have any
+specific (subjectAltName) dnsName.
 
 For {{I-D.ietf-anima-constrained-voucher}} use, the pledge interface is a CoAP or
 CoAPS interface over UDP.  For use with CoAP/EDHOC, then a plain CoAP interface is
@@ -186,12 +188,12 @@ discusses option for creating this certificate.
 The Pledge Inteface does not require a public IP address, nor does it have have to run on port 443.
 
 In an ACP application ({{I-D.ietf-anima-autonomic-control-plane}}), the Pledge Interface SHOULD
-have an IPv6 ULA address from the prefix allocated to the ACP.  {{acpnoc}}
-provides some options for how the Pledge Interface can be best connected to
+have an IPv6 Unique Local Address (ULA) address from the prefix allocated to
 the ACP.
+{{acpnoc}} provides some options for how the Pledge Interface can be best
+connected to the ACP.
 
-Outside of the ACP context, running the Pledge interface on an IP address that has a
-FQDN that resolves to that IP address (if only internally), and operating it on port 443 may have operational advantages.
+Outside of the ACP context, running the Pledge interface on an IP address that has a FQDN that resolves to that IP address (if only internally), and operating it on port 443 may have operational advantages.
 
 ### MASA client (Northbound Interface)
 
@@ -216,19 +218,24 @@ database of pinned certificates to validate specific manufacturers as called out
 
 ### Join Proxy (Southbound Interface)
 
-In the ACP context, the Registrar is expected to have a Join Proxy operating on the Southbound Interface in order to announce the existence of the Registrar to the local network, for the benefit of directly connected devices.  This permits the machines in the NOC itself to autonomically join the domain.
+In the ACP context, the Registrar is expected to have a Join Proxy operating
+on the Southbound Interface in order to announce the existence of the
+Registrar to the local network, for the benefit of directly connected
+devices.
+This permits the systems on the LAN in the NOC itself to autonomically join the domain.
 
 The Join Proxy MAY announce the IP address (ULA) and port of the actual Pledge Interface, rather than announcing a link-local address and then performing a proxy operation.
 
 ### EST and BRSKI GRASP announcements
 
-As specified in {{I-D.ietf-anima-bootstrapping-keyinfra}} section 4.3, in an ACP context, the Registrar
-MUST announce itself inside the ACP using GRASP.  The Registrar MUST incorporate enough of a GRASP daemon in order to perform the M_FLOOD announcements.
+As specified in {{I-D.ietf-anima-bootstrapping-keyinfra}} section 4.3, in an
+ACP context, the Registrar MUST announce itself inside the ACP using GRASP.
+The Registrar MUST incorporate enough of a GRASP daemon in order to perform the M_FLOOD announcements.
 
 As specified in {{I-D.ietf-anima-autonomic-control-plane}} section 6.1.2, in an ACP context,
 if the Registrar will also be providing for renewal of certificates using EST, then it SHOULD
-announce itself inside the ACP using GRASP.  Unless made impossible due to loading concerns,
-it is RECOMMENDED that all Registrar instances offer certificate renewal services in this fashion.
+announce itself inside the ACP using GRASP.
+Unless made impossible due to loading concerns, it is RECOMMENDED that all Registrar instances offer certificate renewal services in this fashion.
 
 The use of {{I-D.ietf-acme-star}} Short-Term Automatically-Renewed Certificates is RECOMMENDED.
 This mandates that the EST server be highly available.
@@ -250,14 +257,22 @@ An entirely separate process is justified with the only connection to the other 
 # Connecting the Autonomic Control Plane to the Network Operations Center (NOC) {#acpnoc}
 
 {{I-D.ietf-anima-autonomic-control-plane}} section 8.1 describes a mechanism
-to connect non-ACP capable systems to the ACP.  The use of this mechanism is critical to incremental deployment of ANIMA and BRSKI in operators.
+to connect non-ACP capable systems to the ACP.
+The use of this mechanism is critical to incremental deployment of ANIMA and BRSKI in operators.
 
-The deployment of BRSKI capable equipment would ideally occur in a concentric ring outward from the NOC.  This would start by an upgrade of the router that connects the NOC to the production network.  This device needs to support the ACP connect functionality.
+The deployment of BRSKI capable equipment would ideally occur in an outward
+wave, a concentric ring, from the NOC.
+(EDNOTE: INSERT DIAGRAMS)
+This would start by an upgrade of the router that connects the NOC to the production network.  This device needs to support the ACP connect functionality.
 
-It is possible, but beyond the scope of this document, to do initial connectivity of the ACP and of multiple NOCs by manually configured IPsec tunnels.  This is likely an
-important step for incremental initial deployment.
+It is possible, but beyond the scope of this document, to do initial
+connectivity of the ACP and of multiple NOCs by manually configured IPsec tunnels.
+This is likely an important step for incremental initial deployment.
 
-The Registrar described in the next section either needs to be connected via one of the above mentioned tunnels, or it must be located on a network with ACP Connect, or it must itself be part of an automatically configured ACP.  It is quite reasonable for the Registrar to be part of a larger appliance that also includes an ACP Connect functionality.
+The Registrar described in the next section either needs to be connected via
+one of the above mentioned tunnels, or it must be located on a network with
+ACP Connect, or it must itself be part of an automatically configured ACP.
+It is quite reasonable for the Registrar to be part of a larger appliance that also includes an ACP Connect functionality.
 
 # Public Key Infrastructure Recommendations for the Registrar {#certauthsecurity}
 
@@ -272,21 +287,32 @@ The requirements for the PKI depends upon what kind of network is being managed.
 
 ## PKI recommendations for Tier-1/ISP Networks
 
-A three-tier PKI infrastructure is appropriate for an ISP.  This entails having a root CA created with the key kept offline, and a number of intermediate CAs that have online keys that issue "day-to-day" certificates.
+A three-tier PKI infrastructure is appropriate for an ISP.
+This entails having a root CA created with the key kept offline, and a number of intermediate CAs that have online keys that issue "day-to-day" certificates.
 
 Whether the root private key is secured by applying secret-splitting, and then storing the results on multiple USBs key kept in multiple safes, or via Hardware Security Module is a local decision informed by best current practices.
 
-The root CA is then used to sign a number of intermediate entities: this will include an intermediate CA for the Registrar that is deployed into each redundant NOC location.  Multiple intermediate CAs with a common root provides significantly more security and operational flexibility than attempts to share a private key among locations.
+The root CA is then used to sign a number of intermediate entities: this will
+include an intermediate CA for the Registrar that is deployed into each
+redundant NOC location.
+Multiple intermediate CAs with a common root provides significantly more
+security and operational flexibility than attempts to share a private key among locations.
 
-While the root CA should have a longevity of at least 5 years, after which it can be resigned rather than re-generated, the intermediate CA keys need only have a 1-2 year duration, and at the end of their lifetime, a new private key should be generated.
+While the root CA should have a longevity of at least 5 years, after which it
+can be re-signed rather than re-generated.
+(Resigning an existing key might not require replacement of trust anchors on all devices)
+
+The intermediate CA keys need only have a 1-2 year duration, and at the end
+of their lifetime, a new private key should be generated.
+
 Shorter periods are possible, but until there is more experience with them, not recommended.  The intermediate CA key should be regenerated because the intermediate CA private key will need to be online, available to the Registrar CA system.
 There are many more opportunities for the key to leak, such as into backups.
 
 The intermediate CA is then used to sign End-Entity certificates which are returned as part of the BRSKI-EST mechanism.
 
-The Registrar needs client and server certificates for it's BRSKI-EST and BRSKI-MASA connections.  It is recommended that an additional intermediate CA be created for
-manually issued certificates such as these.  This intermediate CA could be called
-the NOC Infrastructure CA, and could be used to issue certificates for all manner
+The Registrar needs client and server certificates for it's BRSKI-EST and BRSKI-MASA connections.
+It is recommended that an additional intermediate CA be created for manually issued certificates such as these.
+This intermediate CA could be called the NOC Infrastructure CA, and could be used to issue certificates for all manner
 of infrastructure such as web-based monitoring tools.
 The private root CA certificate should be installed into the browsers of NOC personnel.
 
@@ -305,28 +331,35 @@ for the ACP Connect network is rather easy, that only a single legal jurisdictio
 A three-tier PKI infrastructure is still recommended for the reason that
 it provides operational continuity options not available with a two-level system.
 The recommendation is to have a root CA mechanism installed on a Virtual Machine
-which is not connected to a network.  The root CA private key is kept offline,
-secret split among a number of USB keys, kept in the possession of key personnel.
+which is not connected to a network.
+The root CA private key is kept offline, secret split among a number of USB keys, kept in the possession of key personnel.
 
-The secret split should have at least five components, of which at least three are required to reconstruct the key.  See {{I-D.hallambaker-mesh-udf}} section 4.5 for one such mechanism, there are many others, and there are no interoperability requirements for the secret split.
+The secret split should have at least five components, of which at least
+three are required to reconstruct the key.
+See {{I-D.hallambaker-mesh-udf}} section 4.5 for one such mechanism, there
+are many others, and there are no interoperability requirements for the secret split.
 
 The essential point is that the Enterprise is able to recover the root CA key
 even without some number of personnel and is able to continue operating it's network.
 
-As in the ISP case, the intermediate CA is then used to sign End-Entity certificates which  are returned as part of the BRSKI-EST mechanism.  One intermediate CA key suffices as there
-is only one NOC location with a Registrar.  Incidental keys for internal operations,
-and for the BRSKI-EST server certificate can be done with this single intermediate CA.
+As in the ISP case, the intermediate CA is then used to sign End-Entity
+certificates which  are returned as part of the BRSKI-EST mechanism.
+One intermediate CA key suffices as there is only one NOC location with a Registrar.
+Incidental certificates for internal operations (such as internal web servers, email
+servers, etc.), and for the BRSKI-EST server certificate can be done with this single intermediate CA.
 
-The BRSKI-MASA TLS Client Certificate key for an enterprise may not be needed;
-it depends upon the policies of the manufacturers which are involved.
+The BRSKI-MASA TLS Client Certificate key for an enterprise may not be
+needed; it depends upon the policies of the manufacturers which are involved.
 It may be simpler to use a certificate produced by a public CA (such as
-LetsEncrypt), as this makes it easier for manufacturers to validate the
-provided certificate.
+LetsEncrypt), as this makes it easier for manufacturers to validate the provided certificate.
 
-The document {{I-D.moskowitz-ecdsa-pki}} provides some practical instructions on setting up this kind of system.  This document recommends the use of ECDSA keys for the root
-and intermediate CAs.  In an Enterprise, there are likely many more legacy
-devices that might need to become involved in the secure domain.  It is
-recommended that an RSA root and intermediate CA be more strongly considered.
+The document {{I-D.moskowitz-ecdsa-pki}} provides some practical instructions
+on setting up this kind of system.
+This document recommends the use of ECDSA keys for the root and intermediate
+CAs.
+In an  Enterprise, there are likely many more legacy devices that might need
+to become involved in the secure domain.
+It is recommended that an RSA root and intermediate CA be more strongly considered.
 
 ## Home Network
 
@@ -487,10 +520,10 @@ As part of the BRSKI voucher-request process the Pledge's Voucher-Request is
 wrapped by the Registrar in another voucher-request and signed.
 It is this certificate which which pinned by MASA to validate the connection.
 
-The certificate used to sign the voucher-request MUST be the same as the one
-that is used for the TLS Server Connection.  This implies that the signed
-voucher-request MUST be constructed on the same machine that terminates the
-BRSKI-EST MASA connection.
+The certificate used to sign the (parboiled) voucher-request MUST be the same as the one
+that is used for the TLS Server Connection.
+This implies that the signed voucher-request MUST be constructed on the same
+machine that terminates the BRSKI-EST MASA connection.
 
 # Autonomic Control Plane Addressing
 
