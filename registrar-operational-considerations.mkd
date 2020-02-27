@@ -38,6 +38,7 @@ informative:
   I-D.friel-acme-integrations:
   I-D.moskowitz-ecdsa-pki:
   I-D.hallambaker-mesh-udf:
+  I-D.bdc-something-something-certificate:
   threetier:
     target: "https://en.wikipedia.org/wiki/Multitier_architecture"
     title: "Multitier architecture"
@@ -400,6 +401,11 @@ The BRSKI-EST connection uses TLS Client Certificate information, so it is
 necessary for the presentation tier to pass the entire certificate through to
 the application layer.  The presentation tier MUST accept all Client
 Certificates, many of which might it might not have anchors for.
+Many n-tier systems provide for non-standard ways to transmit the client
+certificate from presentation layer to application layer, but
+{{I-D.bdc-something-something-certificate}} also intends to provide a
+standards track mechanism.
+
 
 In addition, the Registrar Voucher-Request MUST be signed using the same key
 pair that is used to terminate the TLS connection, so the application layer
