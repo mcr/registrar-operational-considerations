@@ -530,7 +530,7 @@ It is this certificate which which pinned by MASA to validate the connection.
 The certificate used to sign the (parboiled) voucher-request MUST be the same as the one
 that is used for the TLS Server Connection.
 This implies that the signed voucher-request MUST be constructed on the same
-machine that terminates the BRSKI-EST MASA connection.
+machine that terminates the BRSKI-EST connection.
 
 # Autonomic Control Plane Addressing
 
