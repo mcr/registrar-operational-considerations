@@ -173,9 +173,9 @@ specific (subjectAltName) dnsName.
 
 When a constrained onboarding mechanism is supported via {{I-D.ietf-anima-constrained-voucher}}, then CoAP is used.  
 
-{{I-D.vanderstok-anima-constrained-join-proxy}} describes a mechanism to provide a stateless proxy of CoAPS connections, in which case DTLS traffic will be proxied by the Join Proxy to the port that the Registrar announces via GRASP within the ACP.  In this case, then there is DTLS layer below the CoAP layer.
+{{?I-D.vanderstok-anima-constrained-join-proxy}} describes a mechanism to provide a stateless proxy of CoAPS connections, in which case DTLS traffic will be proxied by the Join Proxy to the port that the Registrar announces via GRASP within the ACP.  In this case, then there is DTLS layer below the CoAP layer.
 
-{{I-D.ietf-6tisch-minimal-security}} describes a proxy mechanism that can be used with {{I-D.selander-ace-ake-authz}} to pass CoAP traffic.  In this case, depending upon the chosen AKE, the key agreement protocol would be above CoAP.
+{{?I-D.ietf-6tisch-minimal-security}} describes a proxy mechanism that can be used with {{?I-D.selander-ace-ake-authz}} to pass CoAP traffic.  In this case, depending upon the chosen AKE, the key agreement protocol would be above CoAP.
 
 {{I-D.richardson-anima-state-for-joinrouter}} offers some additional
 mechanisms, one of which involves dynamically created IPIP tunnels.  If these
@@ -194,9 +194,8 @@ In an ACP application ({{I-D.ietf-anima-autonomic-control-plane}}), the Pledge I
 {{acpnoc}} provides some options for how the Pledge Interface can be best connected to the ACP.
 
 Outside of the ACP context, running the Pledge interface on an IP address that has a FQDN that resolves to that IP address (if only internally), and operating it on port 443 may have operational advantages.
-The Registrar may have additional management functions, it may also serve as an EST end point for certificate renewal, and {{I-D.friel-anima-brski-cloud}} proposes a mechanism to bootstrap devices which are not connected by a convex ACP, or no ACP.
+The Registrar may have additional management functions, it may also serve as an EST end point for certificate renewal, and {{?I-D.friel-anima-brski-cloud}} proposes a mechanism to bootstrap devices which are not connected by a convex ACP, or no ACP.
 The Registrar may be accessible via multiple interfaces.
-
 
 ### MASA client (Northbound Interface)
 
