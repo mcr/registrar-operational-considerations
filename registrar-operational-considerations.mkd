@@ -236,7 +236,7 @@ The Registrar MUST incorporate enough of a GRASP daemon in order to perform the 
 
 As specified in {{I-D.ietf-anima-autonomic-control-plane}} section 6.1.2, in an ACP context,
 if the Registrar will also be providing for renewal of certificates using EST, then it SHOULD
-announce itself inside the ACP using GRASP.
+announce itself inside the ACP using GRASP. See {{I-D.ietf-anima-autonomic-control-plane}} section 6.1.5.1 for details.
 Unless made impossible due to loading concerns, it is RECOMMENDED that all Registrar instances offer certificate renewal services in this fashion.
 
 The use of {{I-D.ietf-acme-star}} Short-Term Automatically-Renewed Certificates is RECOMMENDED.
