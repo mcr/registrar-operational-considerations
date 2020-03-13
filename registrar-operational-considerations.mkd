@@ -171,7 +171,7 @@ As a result, the registrar may run on arbitrary port numbers.
 The voucher pins the associated certificate, so the Registrar does not need to have any
 specific (subjectAltName) dnsName.
 
-When a constrained onboarding mechanism is supported via {{I-D.ietf-anima-constrained-voucher}}, then CoAP is used.  
+When a constrained onboarding mechanism is supported via {{I-D.ietf-anima-constrained-voucher}}, then CoAP is used.
 
 {{?I-D.vanderstok-anima-constrained-join-proxy}} describes a mechanism to provide a stateless proxy of CoAPS connections, in which case DTLS traffic will be proxied by the Join Proxy to the port that the Registrar announces via GRASP within the ACP.  In this case, then there is DTLS layer below the CoAP layer.
 
@@ -186,8 +186,8 @@ The Pledge Interface requires a TLS ServerCertificate, and {{brskiestcert}}
 discusses option for creating this certificate.
 
 The Pledge Inteface does not require a public IP address, nor does it have have to run on port 443.
-The address and port of the Pledge interface to the Registrar is advertised by the Registrar using GRASP, according to {{I-D.ietf-anima-bootstrapping-keyinfra}} section 4.1.1.  
-The service may run on any available port.  
+The address and port of the Pledge interface to the Registrar is advertised by the Registrar using GRASP, according to {{I-D.ietf-anima-bootstrapping-keyinfra}} section 4.1.1.
+The service may run on any available port.
 The HTTPS, CoAP and CoAPS port numbers do not need to be coordinated.
 
 In an ACP application ({{I-D.ietf-anima-autonomic-control-plane}}), the Pledge Interface SHOULD have an IPv6 Unique Local Address (ULA) address from the prefix allocated to the ACP.
