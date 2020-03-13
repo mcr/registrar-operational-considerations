@@ -186,14 +186,17 @@ The Pledge Interface requires a TLS ServerCertificate, and {{brskiestcert}}
 discusses option for creating this certificate.
 
 The Pledge Inteface does not require a public IP address, nor does it have have to run on port 443.
+The address and port of the Pledge interface to the Registrar is advertised by the Registrar using GRASP, according to {{I-D.ietf-anima-bootstrapping-keyinfra}} section 4.1.1.  
+The service may run on any available port.  
+The HTTPS, CoAP and CoAPS port numbers do not need to be coordinated.
 
-In an ACP application ({{I-D.ietf-anima-autonomic-control-plane}}), the Pledge Interface SHOULD
-have an IPv6 Unique Local Address (ULA) address from the prefix allocated to
-the ACP.
-{{acpnoc}} provides some options for how the Pledge Interface can be best
-connected to the ACP.
+In an ACP application ({{I-D.ietf-anima-autonomic-control-plane}}), the Pledge Interface SHOULD have an IPv6 Unique Local Address (ULA) address from the prefix allocated to the ACP.
+{{acpnoc}} provides some options for how the Pledge Interface can be best connected to the ACP.
 
 Outside of the ACP context, running the Pledge interface on an IP address that has a FQDN that resolves to that IP address (if only internally), and operating it on port 443 may have operational advantages.
+The Registrar may have additional management functions, it may also serve as an EST end point for certificate renewal, and {{I-D.friel-anima-brski-cloud}} proposes a mechanism to bootstrap devices which are not connected by a convex ACP, or no ACP.
+The Registrar may be accessible via multiple interfaces.
+
 
 ### MASA client (Northbound Interface)
 
