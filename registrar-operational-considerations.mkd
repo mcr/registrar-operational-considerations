@@ -165,18 +165,17 @@ The pledge interface is the southbound interface.  This interface runs the
 BRSKI-EST protocol.  This interface faces into the operator's network,
 receiving requests from devices to join the network.
 
-For {{I-D.ietf-anima-bootstrapping-keyinfra}} use, the pledge interface is an
-HTTPS interface.
-Due to the use of provinsional trust state in the BRSKI-EST interface the
-pledge never verifies the contents of the TLS server certificate.
+For {{I-D.ietf-anima-bootstrapping-keyinfra}} use, the pledge interface is an HTTPS interface.
+Due to the use of provinsional trust state in the BRSKI-EST interface the pledge never verifies the contents of the TLS server certificate.
 As a result, the registrar may run on arbitrary port numbers.
 The voucher pins the associated certificate, so the Registrar does not need to have any
 specific (subjectAltName) dnsName.
 
-For {{I-D.ietf-anima-constrained-voucher}} use, the pledge interface is a CoAP or
-CoAPS interface over UDP.  For use with CoAP/EDHOC, then a plain CoAP interface is
-used, and the security (EDHOC and OSCORE) lives above CoAP.
-For CoAP/DTLS (CoAPS) then there is DTLS layer below the CoAP layer.
+When a constrained onboarding mechanism is supported via {{I-D.ietf-anima-constrained-voucher}}, then CoAP is used.  
+
+{{I-D.vanderstok-anima-constrained-join-proxy}} describes a mechanism to provide a stateless proxy of CoAPS connections, in which case DTLS traffic will be proxied by the Join Proxy to the port that the Registrar announces via GRASP within the ACP.  In this case, then there is DTLS layer below the CoAP layer.
+
+{{I-D.ietf-6tisch-minimal-security}} describes a proxy mechanism that can be used with {{I-D.selander-ace-ake-authz}} to pass CoAP traffic.  In this case, depending upon the chosen AKE, the key agreement protocol would be above CoAP.
 
 {{I-D.richardson-anima-state-for-joinrouter}} offers some additional
 mechanisms, one of which involves dynamically created IPIP tunnels.  If these
