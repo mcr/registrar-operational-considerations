@@ -141,7 +141,11 @@ buildings.  It has Building Operations which integrates the IoT devices found
 in the buildings that it owns, and it has Operations Technology (OT) that
 manages the automated systems in it's on-site manufacturing facilities.
 
-INSERT DIAGRAM
+{:enterpriseNetwork: artwork-align="center"}
+~~~~ WHOLEFLOW
+{::include enterpriseNetwork.txt}
+~~~~
+{:enterpriseNetwork title="Reference Enterprise network"}
 
 ### Home Network
 
