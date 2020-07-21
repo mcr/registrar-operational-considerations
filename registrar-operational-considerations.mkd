@@ -22,7 +22,11 @@ author:
   name: Michael Richardson
   org: Sandelman Software Works
   email: mcr+ietf@sandelman.ca
-
+- ins: Jie Yang
+  name: Jie Yang
+  org: Huawei Technologies Co., Ltd.
+  email: jay.yang@huawei.com
+  
 normative:
   RFC8174:
   I-D.ietf-anima-bootstrapping-keyinfra: BRSKI
@@ -308,16 +312,16 @@ While the root CA should have a longevity of at least 5 years, after which it
 can be re-signed rather than re-generated.
 (Resigning an existing key might not require replacement of trust anchors on all devices)
 
-The intermediate CA keys need only have a 1-2 year duration, and at the end
-of their lifetime, a new private key should be generated.
+The intermediate CA keys need only have a 1-2 year duration, and before the end
+of their lifetime, a new private key should be generated and replace the old one.
 
 Shorter periods are possible, but until there is more experience with them, not recommended.  The intermediate CA key should be regenerated because the intermediate CA private key will need to be online, available to the Registrar CA system.
 There are many more opportunities for the key to leak, such as into backups.
 
 The intermediate CA is then used to sign End-Entity certificates which are returned as part of the BRSKI-EST mechanism.
 
-The Registrar needs client and server certificates for it's BRSKI-EST and BRSKI-MASA connections.
-It is recommended that an additional intermediate CA be created for manually issued certificates such as these.
+The Registrar needs both of client and server certificates for it's BRSKI-EST and BRSKI-MASA connections.
+It is recommended that an additional intermediate CA can be created for manually issued certificates such as these.
 This intermediate CA could be called the NOC Infrastructure CA, and could be used to issue certificates for all manner
 of infrastructure such as web-based monitoring tools.
 The private root CA certificate should be installed into the browsers of NOC personnel.
@@ -331,8 +335,7 @@ CA will be required for some legacy equipment.
 
 Enterprises that have multiple Network Operations Center should consider the recommendations above for an ISP.
 
-This section applies to Enterprises that have all NOC operations/personel into a single location.  This is not a hard rule for scaling, but the intent is that physical security
-for the ACP Connect network is rather easy, that only a single legal jurisdiction will apply, and that it is possible to get people together easily to do things like resign keys.
+This section applies to Enterprises that have all NOC operations/personel into a single location, which is probably on-premise data center. This is not a hard rule for scaling, but the intent is that physical security for the ACP Connect network is rather easy, that only a single legal jurisdiction will apply, and that it is possible to get people together easily to do things like resign keys.
 
 A three-tier PKI infrastructure is still recommended for the reason that
 it provides operational continuity options not available with a two-level system.
@@ -529,7 +532,7 @@ If the Registrar is not using a supply chain integration that includes the MASA 
 
 As part of the BRSKI voucher-request process the Pledge's Voucher-Request is
 wrapped by the Registrar in another voucher-request and signed.
-It is this certificate which which pinned by MASA to validate the connection.
+It is this certificate which pinned by MASA to validate the connection.
 
 The certificate used to sign the (parboiled) voucher-request MUST be the same as the one
 that is used for the TLS Server Connection.
