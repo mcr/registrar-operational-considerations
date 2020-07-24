@@ -9,6 +9,8 @@
              /                                 \
             /                                   \
    .--------------.                      .-------------.
-   | Office Staff |                      | IoT Devices |
-   | rtr          |                      | rtr         |
+   | Office Staff |                      |   building  |
+   |   routers    |                      |  automation |
+   |   switches   |                      |     IoT     |
+   |   servers    |                      |   sensors   |
    '--------------'                      '-------------'
