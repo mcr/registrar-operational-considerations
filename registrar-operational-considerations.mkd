@@ -26,7 +26,7 @@ author:
   name: Jie Yang
   org: Huawei Technologies Co., Ltd.
   email: jay.yang@huawei.com
-  
+
 normative:
   RFC8174:
   I-D.ietf-anima-bootstrapping-keyinfra: BRSKI
@@ -104,7 +104,7 @@ users are addressed in a separate section at the end as special case.
 
 This document first introduces the different scales of deployment as a reference for further discussion and contrasts, and then provides analyses some consequences of architectural choices that may be appropriate for different scales of deployments.
 
-The document includes security best practices for the management of the certificates and the certificate authorities.
+The document includes security best practices for the management of the certificates and the certification authorities.
 
 ## Terminology
 
@@ -249,17 +249,17 @@ Unless made impossible due to loading concerns, it is RECOMMENDED that all Regis
 
 The use of {{I-D.ietf-acme-star}} Short-Term Automatically-Renewed Certificates is RECOMMENDED.
 This mandates that the EST server be highly available.
-If STAR-style renewals are not used, then the Certificate Authority will need to make OCSP or CRL Distribution points available.
+If STAR-style renewals are not used, then the Certification Authority will need to make OCSP or CRL Distribution points available.
 
-### Certificate Authority
+### Certification Authority
 
-If the Enterprise/ISP has an existing certificate authority system that it wishes to use, then an interface to it has to be enabled.  This may run protocols like EST, CMP or ACME.
+If the Enterprise/ISP has an existing certification authority system that it wishes to use, then an interface to it has to be enabled.  This may run protocols like EST, CMP or ACME.
 
-Smaller Enterprises and Residential uses of BRSKI are encouraged to use an internal (private) certificate authority. See {{certauthsecurity}} for a discussion of securing this CA.
+Smaller Enterprises and Residential uses of BRSKI are encouraged to use an internal (private) certification authority. See {{certauthsecurity}} for a discussion of securing this CA.
 
 ### Management Interface
 
-The Registrar will require a management interface.  As is the trend, this will often be a web-based single page application using AJAX API calls to perform communications.  This interface SHOULD be made available on the Southbound NOC interface only, and it MUST be on a different IP address and port number then the BRSKI-EST interface.  It should be secured with HTTPS, and use of a public ({{WebPKI}}) anchor is reasonable as it may be that the internal certificate authority may be unavailable or require maintenance.
+The Registrar will require a management interface.  As is the trend, this will often be a web-based single page application using AJAX API calls to perform communications.  This interface SHOULD be made available on the Southbound NOC interface only, and it MUST be on a different IP address and port number then the BRSKI-EST interface.  It should be secured with HTTPS, and use of a public ({{WebPKI}}) anchor is reasonable as it may be that the internal certification authority may be unavailable or require maintenance.
 
 An entirely separate process is justified with the only connection to the other procesess being the database. (This does not mean it can not share code modules)
 
@@ -286,7 +286,7 @@ It is quite reasonable for the Registrar to be part of a larger appliance that a
 
 # Public Key Infrastructure Recommendations for the Registrar {#certauthsecurity}
 
-The Registrar requires access to, or must contain a Certificate Authority (CA).
+The Registrar requires access to, or must contain a Certification Authority (CA).
 
 This section deals with the situation where the CA is provided internally.
 {{I-D.friel-acme-integrations}} deals with the case where the CA is provided by an external service, and the CA trust anchors are public.  These use ACME ({{RFC8555}}) is used as the interface.  That is out of scope for this document.
@@ -377,7 +377,7 @@ most challenging situation.  The three-tier PKI architecture is not justified
 because the ability to keep the root CA offline has no operational value.
 
 The home network registrar should be initialized with a single key pair used
-as the certificate authority.
+as the certification authority.
 
 Secret splitting is useful in order to save the generated key with a few
 neighbours.  It is recommended that the entire PKI system database (including
