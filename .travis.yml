@@ -7,6 +7,6 @@ python:
 before_install:
   - "pip install xml2rfc pyang"
   - "gem install kramdown-rfc2629"
-  - "export PATH=$HOME/.local/bin:$PATH."
+  - "export PATH=$HOME/.local/bin:$PATH"
 
 script: "make"
