@@ -5,8 +5,8 @@
 Network Working Group                                      M. Richardson
 Internet-Draft                                  Sandelman Software Works
 Intended status: Best Current Practice                           J. Yang
-Expires: January 30, 2021                  Huawei Technologies Co., Ltd.
-                                                           July 29, 2020
+Expires: 12 May 2021                       Huawei Technologies Co., Ltd.
+                                                         8 November 2020
 
 
              Operational Considerations for BRSKI Registrar
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on January 30, 2021.
+   This Internet-Draft will expire on 12 May 2021.
 
 Copyright Notice
 
@@ -48,22 +48,21 @@ Copyright Notice
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
-   Provisions Relating to IETF Documents
-   (https://trustee.ietf.org/license-info) in effect on the date of
+   Provisions Relating to IETF Documents (https://trustee.ietf.org/
+   license-info) in effect on the date of publication of this document.
 
 
 
-Richardson & Yang       Expires January 30, 2021                [Page 1]
+Richardson & Yang          Expires 12 May 2021                  [Page 1]
 
-Internet-Draft          Registrar Considerations               July 2020
+Internet-Draft          Registrar Considerations           November 2020
 
 
-   publication of this document.  Please review these documents
-   carefully, as they describe your rights and restrictions with respect
-   to this document.  Code Components extracted from this document must
-   include Simplified BSD License text as described in Section 4.e of
-   the Trust Legal Provisions and are provided without warranty as
-   described in the Simplified BSD License.
+   Please review these documents carefully, as they describe your rights
+   and restrictions with respect to this document.  Code Components
+   extracted from this document must include Simplified BSD License text
+   as described in Section 4.e of the Trust Legal Provisions and are
+   provided without warranty as described in the Simplified BSD License.
 
 Table of Contents
 
@@ -71,7 +70,7 @@ Table of Contents
      1.1.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   3
      1.2.  Reference Network and Diagrams  . . . . . . . . . . . . .   4
        1.2.1.  Tier-1 Network  . . . . . . . . . . . . . . . . . . .   4
-       1.2.2.  Enterprise Network  . . . . . . . . . . . . . . . . .   4
+       1.2.2.  Enterprise Network  . . . . . . . . . . . . . . . . .   5
        1.2.3.  Home Network  . . . . . . . . . . . . . . . . . . . .   5
      1.3.  Internal architectural view . . . . . . . . . . . . . . .   5
        1.3.1.  Pledge Interface (Southbound Interface) . . . . . . .   6
@@ -81,25 +80,26 @@ Table of Contents
        1.3.5.  Certification Authority . . . . . . . . . . . . . . .   9
        1.3.6.  Management Interface  . . . . . . . . . . . . . . . .   9
    2.  Connecting the Autonomic Control Plane to the Network
-       Operations Center (NOC) . . . . . . . . . . . . . . . . . . .   9
-   3.  Public Key Infrastructure Recommendations for the Registrar .  10
+           Operations Center (NOC) . . . . . . . . . . . . . . . . .   9
+   3.  Public Key Infrastructure Recommendations for the
+           Registrar . . . . . . . . . . . . . . . . . . . . . . . .  10
      3.1.  PKI recommendations for Tier-1/ISP Networks . . . . . . .  10
      3.2.  Enterprise Network  . . . . . . . . . . . . . . . . . . .  11
      3.3.  Home Network  . . . . . . . . . . . . . . . . . . . . . .  12
    4.  Architecture Considerations for the Registrar . . . . . . . .  13
      4.1.  Completely Synchronous Registrar  . . . . . . . . . . . .  14
      4.2.  Partially Synchronous Registrar . . . . . . . . . . . . .  14
-     4.3.  Asynchronous Registrar  . . . . . . . . . . . . . . . . .  14
+     4.3.  Asynchronous Registrar  . . . . . . . . . . . . . . . . .  15
    5.  Certificates needed for the Registrar . . . . . . . . . . . .  15
      5.1.  TLS Server Certificate for BRSKI-EST  . . . . . . . . . .  15
-     5.2.  TLS Client Certificate for BRSKI-MASA . . . . . . . . . .  15
-       5.2.1.  Use of Publically Anchored TLS Client Certificate
-               with BRSKI-MASA connection  . . . . . . . . . . . . .  16
+     5.2.  TLS Client Certificate for BRSKI-MASA . . . . . . . . . .  16
+       5.2.1.  Use of Publically Anchored TLS Client Certificate with
+               BRSKI-MASA connection . . . . . . . . . . . . . . . .  16
      5.3.  Certificate for signing of Voucher-Requests . . . . . . .  16
    6.  Autonomic Control Plane Addressing  . . . . . . . . . . . . .  16
    7.  Privacy Considerations  . . . . . . . . . . . . . . . . . . .  17
    8.  Security Considerations . . . . . . . . . . . . . . . . . . .  17
-     8.1.  Denial of Service Attacks against the Registrar . . . . .  17
+     8.1.  Denial of Service Attacks against the Registrar . . . . .  18
      8.2.  Loss of Keys/Corruption of Infrastructure . . . . . . . .  18
    9.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  19
    10. Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  19
@@ -109,13 +109,13 @@ Table of Contents
 
 
 
-Richardson & Yang       Expires January 30, 2021                [Page 2]
+Richardson & Yang          Expires 12 May 2021                  [Page 2]
 
-Internet-Draft          Registrar Considerations               July 2020
+Internet-Draft          Registrar Considerations           November 2020
 
 
      12.2.  Informative References . . . . . . . . . . . . . . . . .  20
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  21
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  22
 
 1.  Introduction
 
@@ -165,9 +165,9 @@ Internet-Draft          Registrar Considerations               July 2020
 
 
 
-Richardson & Yang       Expires January 30, 2021                [Page 3]
+Richardson & Yang          Expires 12 May 2021                  [Page 3]
 
-Internet-Draft          Registrar Considerations               July 2020
+Internet-Draft          Registrar Considerations           November 2020
 
 
    This document, while a Best Current Practices, makes use of BCP14
@@ -192,7 +192,6 @@ Internet-Draft          Registrar Considerations               July 2020
    use of actual names makes subsequent discussion about failures
    easier.
 
-
                          .---------.   .------.
                          | Denver  |   | NYC  |
                     .----|---------|---|router|-.   .-----------.
@@ -211,21 +210,27 @@ Internet-Draft          Registrar Considerations               July 2020
           |           |              '-------'
           '-----------'
 
-                       Reference Tier-1 ISP network
+                   Figure 1: Reference Tier-1 ISP network
+
+
+
+
+
+
+
+
+
+
+Richardson & Yang          Expires 12 May 2021                  [Page 4]
+
+Internet-Draft          Registrar Considerations           November 2020
+
 
 1.2.2.  Enterprise Network
 
    A second target is a medium Enterprise that has a single (probably
    on-premise) data center.  The Enterprise has Information Technology
    (IT) operations that include the routers and systems supporting it's
-
-
-
-Richardson & Yang       Expires January 30, 2021                [Page 4]
-
-Internet-Draft          Registrar Considerations               July 2020
-
-
    office staff in it's buildings.  It has Building Operations which
    integrates the IoT devices found in the buildings that it owns, and
    it has Operations Technology (OT) that manages the automated systems
@@ -246,7 +251,7 @@ Internet-Draft          Registrar Considerations               July 2020
             |   servers    |                      |   sensors   |
             '--------------'                      '-------------'
 
-                       Reference Enterprise network
+                   Figure 2: Reference Enterprise network
 
 1.2.3.  Home Network
 
@@ -272,14 +277,9 @@ Internet-Draft          Registrar Considerations               July 2020
 
 
 
-
-
-
-
-
-Richardson & Yang       Expires January 30, 2021                [Page 5]
+Richardson & Yang          Expires 12 May 2021                  [Page 5]
 
-Internet-Draft          Registrar Considerations               July 2020
+Internet-Draft          Registrar Considerations           November 2020
 
 
                             .------------.
@@ -303,7 +303,7 @@ Internet-Draft          Registrar Considerations               July 2020
           | (DULL)     |     '-----------'T |    '------------'
           '------------'        '-----------'
 
-          Figure 1: Reference Internal Architecture for Registrar
+          Figure 3: Reference Internal Architecture for Registrar
 
 1.3.1.  Pledge Interface (Southbound Interface)
 
@@ -333,9 +333,9 @@ Internet-Draft          Registrar Considerations               July 2020
 
 
 
-Richardson & Yang       Expires January 30, 2021                [Page 6]
+Richardson & Yang          Expires 12 May 2021                  [Page 6]
 
-Internet-Draft          Registrar Considerations               July 2020
+Internet-Draft          Registrar Considerations           November 2020
 
 
    [I-D.ietf-6tisch-minimal-security] describes a proxy mechanism that
@@ -383,17 +383,20 @@ Internet-Draft          Registrar Considerations               July 2020
    way for a manufacturer to identify clients.  Section 5.2 discusses
    options for signing this certificate.
 
+
+
+
+
+
+
+Richardson & Yang          Expires 12 May 2021                  [Page 7]
+
+Internet-Draft          Registrar Considerations           November 2020
+
+
    The MASA client interface is outgoing only and does not require any
    special connectivity.  It may be placed behind a typical enterprise
    or residential NAT44 gateway.  IPv6 connectivity is RECOMMENDED.  It
-
-
-
-Richardson & Yang       Expires January 30, 2021                [Page 7]
-
-Internet-Draft          Registrar Considerations               July 2020
-
-
    does need access to DNS, and the DNS lookups SHOULD be validated with
    DNSSEC.
 
@@ -442,12 +445,9 @@ Internet-Draft          Registrar Considerations               July 2020
 
 
 
-
-
-
-Richardson & Yang       Expires January 30, 2021                [Page 8]
+Richardson & Yang          Expires 12 May 2021                  [Page 8]
 
-Internet-Draft          Registrar Considerations               July 2020
+Internet-Draft          Registrar Considerations           November 2020
 
 
 1.3.5.  Certification Authority
@@ -494,18 +494,22 @@ Internet-Draft          Registrar Considerations               July 2020
    IPsec tunnels.  This is likely an important step for incremental
    initial deployment.
 
+
+
+
+
+
+
+
+Richardson & Yang          Expires 12 May 2021                  [Page 9]
+
+Internet-Draft          Registrar Considerations           November 2020
+
+
    The Registrar described in the next section either needs to be
    connected via one of the above mentioned tunnels, or it must be
    located on a network with ACP Connect, or it must itself be part of
    an automatically configured ACP.  It is quite reasonable for the
-
-
-
-Richardson & Yang       Expires January 30, 2021                [Page 9]
-
-Internet-Draft          Registrar Considerations               July 2020
-
-
    Registrar to be part of a larger appliance that also includes an ACP
    Connect functionality.
 
@@ -547,20 +551,21 @@ Internet-Draft          Registrar Considerations               July 2020
    operational flexibility than attempts to share a private key among
    locations.
 
+
+
+
+
+
+
+Richardson & Yang          Expires 12 May 2021                 [Page 10]
+
+Internet-Draft          Registrar Considerations           November 2020
+
+
    While the root CA should have a longevity of at least 5 years, after
    which it can be re-signed rather than re-generated.  (Resigning an
    existing key might not require replacement of trust anchors on all
    devices)
-
-
-
-
-
-
-Richardson & Yang       Expires January 30, 2021               [Page 10]
-
-Internet-Draft          Registrar Considerations               July 2020
-
 
    The intermediate CA keys need only have a 1-2 year duration, and
    before the end of their lifetime, a new private key should be
@@ -605,18 +610,17 @@ Internet-Draft          Registrar Considerations               July 2020
    A three-tier PKI infrastructure is still recommended for the reason
    that it provides operational continuity options not available with a
    two-level system.  The recommendation is to have a root CA mechanism
+
+
+
+Richardson & Yang          Expires 12 May 2021                 [Page 11]
+
+Internet-Draft          Registrar Considerations           November 2020
+
+
    installed on a Virtual Machine which is not connected to a network.
    The root CA private key is kept offline, secret split among a number
    of USB keys, kept in the possession of key personnel.
-
-
-
-
-
-Richardson & Yang       Expires January 30, 2021               [Page 11]
-
-Internet-Draft          Registrar Considerations               July 2020
-
 
    The secret split should have at least five components, of which at
    least three are required to reconstruct the key.  See
@@ -660,19 +664,21 @@ Internet-Draft          Registrar Considerations               July 2020
    The home network registrar should be initialized with a single key
    pair used as the certification authority.
 
+
+
+
+
+
+Richardson & Yang          Expires 12 May 2021                 [Page 12]
+
+Internet-Draft          Registrar Considerations           November 2020
+
+
    Secret splitting is useful in order to save the generated key with a
    few neighbours.  It is recommended that the entire PKI system
    database (including CA private key) be encrypted with a symmetric key
    and the results made available regularly for download to a variety of
    devices.  The symmetric key is split among the neighbours.
-
-
-
-
-Richardson & Yang       Expires January 30, 2021               [Page 12]
-
-Internet-Draft          Registrar Considerations               July 2020
-
 
    The most difficult part of the Home Network PKI and Registrar is
    where to locate it.  Generally it should be located on a device that
@@ -711,6 +717,19 @@ Internet-Draft          Registrar Considerations               July 2020
    presentation tier uses.  This can be operationally challenging if the
    presentation tier is provided by a hardware-based TLS load balancer.
 
+
+
+
+
+
+
+
+
+Richardson & Yang          Expires 12 May 2021                 [Page 13]
+
+Internet-Draft          Registrar Considerations           November 2020
+
+
    For this reason, an alternate architecture where the front-end load
    balancer provides TCP level load balancing, leaving the TLS
    operations to software TLS implementations in the application layer
@@ -721,15 +740,6 @@ Internet-Draft          Registrar Considerations               July 2020
 
    The BRSKI-EST flow includes a back-end call to the BRSKI-MASA flow.
    That is, during the BRSKI-EST /voucherrequest call, a voucher will
-
-
-
-
-Richardson & Yang       Expires January 30, 2021               [Page 13]
-
-Internet-Draft          Registrar Considerations               July 2020
-
-
    need to be fetched from the MASA using a BRSKI-MASA connection.
    There are three ways to do this.
 
@@ -766,6 +776,16 @@ Internet-Draft          Registrar Considerations               July 2020
    in the same thread that just deferred the connection, or in another
    thread kicked off for this purpose.
 
+
+
+
+
+
+Richardson & Yang          Expires 12 May 2021                 [Page 14]
+
+Internet-Draft          Registrar Considerations           November 2020
+
+
 4.3.  Asynchronous Registrar
 
    In the completely asynchronous architecture, things work as with the
@@ -778,14 +798,6 @@ Internet-Draft          Registrar Considerations               July 2020
 
    This version may have a noticeably higher latency as it requires a
    database operation and a database trigger to invoke the process.
-
-
-
-Richardson & Yang       Expires January 30, 2021               [Page 14]
-
-Internet-Draft          Registrar Considerations               July 2020
-
-
    This architecture has the advantage that the internal facing
    Registrar never connects to the Internet.  Furthermore, the number of
    internal facing Registrar instances can be tuned independently from
@@ -820,6 +832,16 @@ Internet-Draft          Registrar Considerations               July 2020
    as recommended above: either signed by a specific intermediate CA or
    via a root CA as appropriate for the environment.
 
+
+
+
+
+
+Richardson & Yang          Expires 12 May 2021                 [Page 15]
+
+Internet-Draft          Registrar Considerations           November 2020
+
+
 5.2.  TLS Client Certificate for BRSKI-MASA
 
    A certificate may optionally be used for authentication of the
@@ -834,13 +856,6 @@ Internet-Draft          Registrar Considerations               July 2020
    Registrar client is appropriate.  They should all be signed by the
    same intermediate CA, with the intermediate and root CA certificates
    being supplied in the TLS connection.
-
-
-
-Richardson & Yang       Expires January 30, 2021               [Page 15]
-
-Internet-Draft          Registrar Considerations               July 2020
-
 
 5.2.1.  Use of Publically Anchored TLS Client Certificate with BRSKI-
         MASA connection
@@ -873,6 +888,16 @@ Internet-Draft          Registrar Considerations               July 2020
    assumed.  (The use of an ACP for the Home Network of IoT devices is
    considered unnecessary due to HNCP)
 
+
+
+
+
+
+Richardson & Yang          Expires 12 May 2021                 [Page 16]
+
+Internet-Draft          Registrar Considerations           November 2020
+
+
    In these context the certificates which are returned by the Registrar
    MUST contain a unique IPv6 ULA address.
    [I-D.ietf-anima-autonomic-control-plane] section 6.10 outlines
@@ -881,23 +906,14 @@ Internet-Draft          Registrar Considerations               July 2020
    the most flexibility for devices.
 
    The use of this mode limits the number of nodes in the network to
-   between 32768 and 8 Million.  32K routers in an ISP network seems
-   like quite a lot already, but use of F=0 addresses provides for up to
-   8 Million devices, each with 256 management end points.
+   between 32768 and 8 Million. 32K routers in an ISP network seems like
+   quite a lot already, but use of F=0 addresses provides for up to 8
+   Million devices, each with 256 management end points.
 
    It should be noted that a mix of F=0 and F=1 addresses may be used,
    but the BRSKI protocol does not directly provide a way to negotiated
    this.  This could be done as part of the Certificate Signing Request:
    the device could decide which kind of address to ask for by changing
-
-
-
-
-Richardson & Yang       Expires January 30, 2021               [Page 16]
-
-Internet-Draft          Registrar Considerations               July 2020
-
-
    the address that it asks for, but this is non-standardized and may
    not work.
 
@@ -931,6 +947,13 @@ Internet-Draft          Registrar Considerations               July 2020
    with any attacks against the Registrar, as the Registrar is
    considered to be an internally facing system.
 
+
+
+Richardson & Yang          Expires 12 May 2021                 [Page 17]
+
+Internet-Draft          Registrar Considerations           November 2020
+
+
    In the context of the Autonomic Control Plane
    ([I-D.ietf-anima-bootstrapping-keyinfra] section 9, and
    [I-D.ietf-anima-autonomic-control-plane]) it is expected that the
@@ -946,14 +969,6 @@ Internet-Draft          Registrar Considerations               July 2020
    network: typically these networks have large number of access ports,
    one for each desktop system.  Those systems can be infected with
    Malware, or may be located in student computer labs physically
-
-
-
-Richardson & Yang       Expires January 30, 2021               [Page 17]
-
-Internet-Draft          Registrar Considerations               July 2020
-
-
    accessible with minimal authorization.  While an attack on the
    Registrar might be part of some kind of student protest, an attack by
    malware seems more likely.
@@ -987,6 +1002,14 @@ Internet-Draft          Registrar Considerations               July 2020
    to be replaced by an uninformed technician is probably the most
    likely situation.
 
+
+
+
+Richardson & Yang          Expires 12 May 2021                 [Page 18]
+
+Internet-Draft          Registrar Considerations           November 2020
+
+
    This situation results in loss of control for all devices in the
    home, and much frustration from the home owner who has to go through
    an onboarding process for all the devices.  The use of a standardized
@@ -1002,13 +1025,6 @@ Internet-Draft          Registrar Considerations               July 2020
    failure, where it is replaced by an identical device or an upward
    compatible device from the same manufacturer, but not against changes
    of vendor.
-
-
-
-Richardson & Yang       Expires January 30, 2021               [Page 18]
-
-Internet-Draft          Registrar Considerations               July 2020
-
 
 9.  IANA Considerations
 
@@ -1028,25 +1044,43 @@ Internet-Draft          Registrar Considerations               July 2020
               Sheffer, Y., Lopez, D., Dios, O., Pastor, A., and T.
               Fossati, "Support for Short-Term, Automatically-Renewed
               (STAR) Certificates in Automated Certificate Management
-              Environment (ACME)", draft-ietf-acme-star-11 (work in
-              progress), October 2019.
+              Environment (ACME)", Work in Progress, Internet-Draft,
+              draft-ietf-acme-star-11, 24 October 2019,
+              <http://www.ietf.org/internet-drafts/draft-ietf-acme-star-
+              11.txt>.
 
    [I-D.ietf-anima-autonomic-control-plane]
               Eckert, T., Behringer, M., and S. Bjarnason, "An Autonomic
-              Control Plane (ACP)", draft-ietf-anima-autonomic-control-
-              plane-27 (work in progress), July 2020.
+              Control Plane (ACP)", Work in Progress, Internet-Draft,
+              draft-ietf-anima-autonomic-control-plane-30, 30 October
+              2020, <http://www.ietf.org/internet-drafts/draft-ietf-
+              anima-autonomic-control-plane-30.txt>.
+
+
+
+
+
+
+Richardson & Yang          Expires 12 May 2021                 [Page 19]
+
+Internet-Draft          Registrar Considerations           November 2020
+
 
    [I-D.ietf-anima-bootstrapping-keyinfra]
               Pritikin, M., Richardson, M., Eckert, T., Behringer, M.,
               and K. Watsen, "Bootstrapping Remote Secure Key
-              Infrastructures (BRSKI)", draft-ietf-anima-bootstrapping-
-              keyinfra-41 (work in progress), April 2020.
+              Infrastructures (BRSKI)", Work in Progress, Internet-
+              Draft, draft-ietf-anima-bootstrapping-keyinfra-44, 21
+              September 2020, <http://www.ietf.org/internet-drafts/
+              draft-ietf-anima-bootstrapping-keyinfra-44.txt>.
 
    [I-D.ietf-anima-constrained-voucher]
               Richardson, M., Stok, P., and P. Kampanakis, "Constrained
-              Voucher Artifacts for Bootstrapping Protocols", draft-
-              ietf-anima-constrained-voucher-08 (work in progress), July
-              2020.
+              Voucher Artifacts for Bootstrapping Protocols", Work in
+              Progress, Internet-Draft, draft-ietf-anima-constrained-
+              voucher-09, 2 November 2020, <http://www.ietf.org/
+              internet-drafts/draft-ietf-anima-constrained-voucher-
+              09.txt>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -1056,15 +1090,6 @@ Internet-Draft          Registrar Considerations               July 2020
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/info/rfc8174>.
-
-
-
-
-
-Richardson & Yang       Expires January 30, 2021               [Page 19]
-
-Internet-Draft          Registrar Considerations               July 2020
-
 
    [RFC8366]  Watsen, K., Richardson, M., Pritikin, M., and T. Eckert,
               "A Voucher Artifact for Bootstrapping Protocols",
@@ -1076,63 +1101,87 @@ Internet-Draft          Registrar Considerations               July 2020
    [I-D.bdc-something-something-certificate]
               Campbell, B., "Client-Cert HTTP Header: Conveying Client
               Certificate Information from TLS Terminating Reverse
-              Proxies to Origin Server Applications", draft-bdc-
-              something-something-certificate-04 (work in progress), May
-              2020.
+              Proxies to Origin Server Applications", Work in Progress,
+              Internet-Draft, draft-bdc-something-something-certificate-
+              04, 7 May 2020, <http://www.ietf.org/internet-drafts/
+              draft-bdc-something-something-certificate-04.txt>.
 
    [I-D.friel-acme-integrations]
               Friel, O., Barnes, R., and R. Shekh-Yusef, "ACME
-              Integrations", draft-friel-acme-integrations-02 (work in
-              progress), October 2019.
+              Integrations", Work in Progress, Internet-Draft, draft-
+              friel-acme-integrations-02, 24 October 2019,
+              <http://www.ietf.org/internet-drafts/draft-friel-acme-
+              integrations-02.txt>.
+
+
+
+
+
+Richardson & Yang          Expires 12 May 2021                 [Page 20]
+
+Internet-Draft          Registrar Considerations           November 2020
+
 
    [I-D.friel-anima-brski-cloud]
               Friel, O., Shekh-Yusef, R., and M. Richardson, "BRSKI
-              Cloud Registrar", draft-friel-anima-brski-cloud-02 (work
-              in progress), May 2020.
+              Cloud Registrar", Work in Progress, Internet-Draft, draft-
+              friel-anima-brski-cloud-03, 24 September 2020,
+              <http://www.ietf.org/internet-drafts/draft-friel-anima-
+              brski-cloud-03.txt>.
 
    [I-D.hallambaker-mesh-udf]
               Hallam-Baker, P., "Mathematical Mesh 3.0 Part II: Uniform
-              Data Fingerprint.", draft-hallambaker-mesh-udf-10 (work in
-              progress), July 2020.
+              Data Fingerprint.", Work in Progress, Internet-Draft,
+              draft-hallambaker-mesh-udf-11, 2 November 2020,
+              <http://www.ietf.org/internet-drafts/draft-hallambaker-
+              mesh-udf-11.txt>.
 
    [I-D.ietf-6tisch-minimal-security]
               Vucinic, M., Simon, J., Pister, K., and M. Richardson,
-              "Constrained Join Protocol (CoJP) for 6TiSCH", draft-ietf-
-              6tisch-minimal-security-15 (work in progress), December
-              2019.
+              "Constrained Join Protocol (CoJP) for 6TiSCH", Work in
+              Progress, Internet-Draft, draft-ietf-6tisch-minimal-
+              security-15, 10 December 2019, <http://www.ietf.org/
+              internet-drafts/draft-ietf-6tisch-minimal-security-
+              15.txt>.
 
    [I-D.moskowitz-ecdsa-pki]
               Moskowitz, R., Birkholz, H., Xia, L., and M. Richardson,
-              "Guide for building an ECC pki", draft-moskowitz-ecdsa-
-              pki-08 (work in progress), February 2020.
+              "Guide for building an ECC pki", Work in Progress,
+              Internet-Draft, draft-moskowitz-ecdsa-pki-09, 9 August
+              2020, <http://www.ietf.org/internet-drafts/draft-
+              moskowitz-ecdsa-pki-09.txt>.
 
    [I-D.richardson-anima-state-for-joinrouter]
               Richardson, M., "Considerations for stateful vs stateless
-              join router in ANIMA bootstrap", draft-richardson-anima-
-              state-for-joinrouter-02 (work in progress), January 2018.
-
-
-
-
-
-
-
-Richardson & Yang       Expires January 30, 2021               [Page 20]
-
-Internet-Draft          Registrar Considerations               July 2020
-
+              join router in ANIMA bootstrap", Work in Progress,
+              Internet-Draft, draft-richardson-anima-state-for-
+              joinrouter-03, 22 September 2020, <http://www.ietf.org/
+              internet-drafts/draft-richardson-anima-state-for-
+              joinrouter-03.txt>.
 
    [I-D.selander-ace-ake-authz]
               Selander, G., Mattsson, J., Vucinic, M., Richardson, M.,
               and A. Schellenbaum, "Lightweight Authorization for
-              Authenticated Key Exchange.", draft-selander-ace-ake-
-              authz-01 (work in progress), March 2020.
+              Authenticated Key Exchange.", Work in Progress, Internet-
+              Draft, draft-selander-ace-ake-authz-02, 2 November 2020,
+              <http://www.ietf.org/internet-drafts/draft-selander-ace-
+              ake-authz-02.txt>.
 
    [I-D.vanderstok-anima-constrained-join-proxy]
               Richardson, M., Stok, P., and P. Kampanakis, "Constrained
-              Join Proxy for Bootstrapping Protocols", draft-vanderstok-
-              anima-constrained-join-proxy-03 (work in progress), March
-              2020.
+              Join Proxy for Bootstrapping Protocols", Work in Progress,
+
+
+
+Richardson & Yang          Expires 12 May 2021                 [Page 21]
+
+Internet-Draft          Registrar Considerations           November 2020
+
+
+              Internet-Draft, draft-vanderstok-anima-constrained-join-
+              proxy-04, 22 September 2020, <http://www.ietf.org/
+              internet-drafts/draft-vanderstok-anima-constrained-join-
+              proxy-04.txt>.
 
    [ieee802-1AR]
               IEEE Standard, ., "IEEE 802.1AR Secure Device Identifier",
@@ -1173,4 +1222,11 @@ Authors' Addresses
 
 
 
-Richardson & Yang       Expires January 30, 2021               [Page 21]
+
+
+
+
+
+
+
+Richardson & Yang          Expires 12 May 2021                 [Page 22]
