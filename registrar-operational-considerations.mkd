@@ -31,11 +31,11 @@ normative:
   RFC8174:
   RFC8995: BRSKI
   RFC8994: ACP
-  I-D.ietf-acme-star:
   I-D.ietf-anima-constrained-voucher:
   RFC8366:
 
 informative:
+  RFC8739:
   RFC7030:
   I-D.richardson-anima-state-for-joinrouter:
   RFC8555:
@@ -249,7 +249,7 @@ announce itself inside the ACP using GRASP.
 See {{-ACP}} section 6.1.5.1 for details.
 Unless made impossible due to loading concerns, it is RECOMMENDED that all Registrar instances offer certificate renewal services in this fashion.
 
-The use of {{?RFC8739}} Short-Term Automatically-Renewed Certificates is RECOMMENDED.
+The use of {{RFC8739}} Short-Term Automatically-Renewed Certificates is RECOMMENDED.
 This mandates that the EST server be highly available.
 If STAR-style renewals are not used, then the Certification Authority will need to make OCSP or CRL Distribution points available.
 
