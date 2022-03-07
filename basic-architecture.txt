@@ -1,6 +1,6 @@
                   .------------.
                   |    MASA    |
-                  |   client   |
+                  |  Interface |
                   | BRSKI-MASA |
                   '------------'
                          ^
