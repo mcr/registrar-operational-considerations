@@ -177,7 +177,7 @@ The pledge interface is the southbound interface.  This interface runs the
 BRSKI-EST protocol.  This interface faces into the operator's network,
 receiving requests from devices to join the network.
 
-For {{I-D.ietf-anima-bootstrapping-keyinfra}} use, the pledge interface is an HTTPS interface.
+For {{-BRSKI}} use, the pledge interface is an HTTPS interface.
 Due to the use of provinsional trust state in the BRSKI-EST interface the pledge never verifies the contents of the TLS server certificate.
 As a result, the registrar may run on arbitrary port numbers.
 The voucher pins the associated certificate, so the Registrar does not need to have any
@@ -296,7 +296,7 @@ It is quite reasonable for the Registrar to be part of a larger appliance that a
 The Registrar requires access to, or must contain a Certification Authority (CA).
 
 This section deals with the situation where the CA is provided internally.
-{{I-D.ietf-acme-integrations}} deals with the case where the CA is provided by an external service, and the CA trust anchors are public.
+{{?I-D.ietf-acme-integrations}} deals with the case where the CA is provided by an external service, and the CA trust anchors are public.
 These use ACME ({{RFC8555}}) is used as the interface.
 That is out of scope for this document.
 
