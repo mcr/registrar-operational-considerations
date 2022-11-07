@@ -333,7 +333,8 @@ This intermediate CA could be called the NOC Infrastructure CA, and could be use
 The private root CA certificate should be installed into the browsers of NOC personnel.
 
 The document {{I-D.moskowitz-ecdsa-pki}} provides some practical instructions on setting up this kind of system.
-This document recommends the use of ECDSA keys for the root and intermediate CAs, but there may be operational reasons why an RSA intermediate CA will be required for some legacy equipment.
+
+This document recommends the use of ECDSA keys for the root and subordinate CAs, but there may be  operational reasons why an RSA subordinate CA will be required for some legacy equipment.
 
 ## Enterprise Network
 
