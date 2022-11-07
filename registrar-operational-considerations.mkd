@@ -1,7 +1,7 @@
 ---
 title: Operational Considerations for BRSKI Registrar
 abbrev: Registrar Considerations
-docname: draft-richardson-anima-registrar-considerations-05
+docname: draft-richardson-anima-registrar-considerations-06
 
 stand_alone: true
 
