@@ -1,7 +1,7 @@
 ---
 title: Operational Considerations for BRSKI Registrar
 abbrev: Registrar Considerations
-docname: draft-richardson-anima-registrar-considerations-06
+docname: draft-richardson-anima-registrar-considerations-07
 
 stand_alone: true
 
@@ -141,6 +141,8 @@ failures easier.
 ~~~~
 {:tier1isp title="Reference Tier-1 ISP network"}
 
+XXX-there were some extended consequences that this diagram was anticipating, which have yet to be writen.
+
 ### Enterprise Network
 
 A second target is a medium Enterprise that has a single (probably on-premise) data
@@ -174,22 +176,27 @@ A Registrar will have four major interfaces, connected together by a common data
 
 ### Pledge Interface (Southbound Interface)
 
-The pledge interface is the southbound interface.  This interface runs the
-BRSKI-EST protocol.  This interface faces into the operator's network,
-receiving requests from devices to join the network.
+The pledge interface is the southbound interface.
+This interface runs the BRSKI-EST protocol.
+It may also offer a constrained-BRSKI protocol using CoAP as described in {{I-D.ietf-anima-constrained-voucher}}.
+It may further offer ultra-constrained onboarding protocols such as {{?I-D.selander-lake-authz}}.
+
+This interface faces into the operator's network, receiving requests from devices to join the network.
+
+There is no requirement that the different onboarding protocols run on the same system, or from the same IP address.
+They may also be seperated onto different networks, and perform all of their coordination through the database.
 
 For {{-BRSKI}} use, the pledge interface is an HTTPS interface.
+
 Due to the use of provinsional trust state in the BRSKI-EST interface the pledge never verifies the contents of the TLS server certificate.
-As a result, the registrar may run on arbitrary port numbers.
+The registrar may also run on arbitrary port numbers, as the port number is part of the announcements used in the discovery protocol(s).
 The voucher pins the associated certificate, so the Registrar does not need to have any
 specific (subjectAltName) dnsName.
-
-When a constrained onboarding mechanism is supported via {{I-D.ietf-anima-constrained-voucher}}, then CoAP is used.
 
 {{?I-D.ietf-anima-constrained-join-proxy}} describes a mechanism to provide a stateless proxy of CoAPS connections, in which case DTLS traffic will be proxied by the Join Proxy to the port that the Registrar announces via GRASP within the ACP.
 In this case, then there is DTLS layer below the CoAP layer.
 
-{{?RFC9031}} describes a proxy mechanism that can be used with {{?I-D.selander-ace-ake-authz}} to pass CoAP traffic.
+{{?RFC9031}} describes a proxy mechanism that can be used with {{?I-D.selander-lake-authz}} to pass CoAP traffic.
 In this case, depending upon the chosen AKE, the key agreement protocol would be above CoAP.
 
 {{I-D.richardson-anima-state-for-joinrouter}} offers some additional
@@ -200,7 +207,11 @@ these options as well.
 The Pledge Interface requires a TLS ServerCertificate, and {{brskiestcert}}
 discusses option for creating this certificate.
 
-The Pledge Inteface does not require a public IP address, nor does it have have to run on port 443.
+The certificates (or DH keys) used for the different protocols could entirely different.
+If horizontal scaling is used, where there are multiple systems offering a BRSKI-EST interface (probably using a load balancing mechanism) then it is not necessary to have the same private keys for each system.
+This assumption requires that the entire BRSKI-EST protocol exchange occur in a single TLS session (i.e. using HTTP/1.1 sessions), or that the load balancing system is able to consistently map each pledge to the same BRSKI-EST interface.
+
+As explained above, the Pledge Inteface does not require a public IP address, nor does it have have to run on port 443.
 The address and port of the Pledge interface to the Registrar is advertised by the Registrar using GRASP, according to {{-BRSKI}} section 4.1.1.
 The service may run on any available port.
 The HTTPS, CoAP and CoAPS port numbers do not need to be coordinated.
@@ -222,9 +233,13 @@ Use of a TLSClientCertificate is RECOMMENDED as this may be the best way for
 a manufacturer to identify clients.
 {{brskimasacert}} discusses options for signing this certificate.
 
+The Northbound interface (V->W) described in {{?I-D.selander-lake-authz}} may require a proof of possesion of the (private) key which the pledge (U) has witnessed.
+In that case, this proof of posession may need to be done in the Southbound BRSKI-EST interface, and stored in the database for use by the Northbound BRSKI-MASA system.
+The private keys from the Southbound interfaces SHOULD NOT be made available on the Northbound interfaces.
+
 The MASA client interface is outgoing only and does not require any special connectivity.
 It may be placed behind a typical enterprise or residential NAT44 gateway.
-IPv6 connectivity is RECOMMENDED.
+IPv6 connectivity is RECOMMENDED however, as an increasing number of MASA may prefer IPv6 only connectivity.
 It does need access to DNS, and the DNS lookups SHOULD be validated with DNSSEC.
 
 The MASA client interface will need to validate the server certificates of the MASA, and to do this it will need access to the common public WebPKI ({{WebPKI}}) trust anchors to validate the MASA.
